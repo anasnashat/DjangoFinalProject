@@ -22,7 +22,7 @@ class Migration(migrations.Migration):
                 ('country', models.CharField(blank=True, max_length=100)),
                 ('phone_number', models.CharField(blank=True, max_length=100)),
                 ('address', models.CharField(blank=True, max_length=100)),
-                ('user', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                ('users', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
             ],
         ),
     ]
