@@ -1,16 +1,26 @@
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 import stripe
+from django.urls import reverse
 
+from donation_project import settings
 from projects.models import Project
 
 
 # Create your views here.
+stripe.api_key = settings.STRIPE_SECRET_KEY
 
 
 @login_required
 def create_donation_session(request, slug):
     project = get_object_or_404(Project, slug=slug)
+
+    if 'localhost' in request.get_host() or '127.0.0.1' in request.get_host():
+        # Use a placeholder image for local development
+        image_url = "https://via.placeholder.com/300"
+    else:
+        # Use the actual project image in production
+        image_url = request.build_absolute_uri(project.image.url)
 
     donation_session = stripe.checkout.Session.create(
         payment_method_types=['card'],
@@ -19,7 +29,7 @@ def create_donation_session(request, slug):
                 'currency': 'usd',
                 'product_data': {
                     'name': f'Donation to {project.title}',
-                    'images': [project.image],
+                    'images': [image_url],
                 },
                 'unit_amount': 1000,
             },
