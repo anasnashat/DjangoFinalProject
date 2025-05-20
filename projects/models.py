@@ -5,6 +5,7 @@ from django.db import models
 
 class Project(models.Model):
     title = models.CharField(max_length=100)
+    slug = models.SlugField(max_length=100, unique=True, blank=True)
     image = models.ImageField(upload_to='project_pics')
     details = models.TextField(blank=True)
     total_target = models.IntegerField(default=0)
@@ -13,11 +14,17 @@ class Project(models.Model):
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    user = models.ForeignKey('auth.User', on_delete=models.CASCADE)
+    created_by = models.ForeignKey('auth.User', on_delete=models.CASCADE)
     category = models.ForeignKey('categories.Category', on_delete=models.CASCADE)
     tags = models.ManyToManyField('tags.Tag')
     is_featured = models.BooleanField(default=False)
 
     def __str__(self):
         return self.title
+        
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            from django.utils.text import slugify
+            self.slug = slugify(self.title)
+        super().save(*args, **kwargs)
 
