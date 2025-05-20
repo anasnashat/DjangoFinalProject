@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'ratings',
     'tags',
     'comments',
+    'payments',
 
 
 
@@ -135,3 +136,9 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'donation_project.settings')
+
+
+# Stripe Settings
+STRIPE_PUBLIC_KEY = 'pk_test_51Lq8c2FnT18gA9slYNqstpTETVber94FCUaRrek94UbEXl0gIsOJWgyPc4F1oXA0iLjaLYU8tcGsTyGz3IseF79I00Z2CTTlyw'
+STRIPE_SECRET_KEY = 'sk_test_51Lq8c2FnT18gA9slibA60HH07pyw80saD8kha7LlQSSbjUw2AVMCYJf8DWLvU8rmoRCmbTFQ9AmiWiRx4jky7ZgC00LXCHooME'
+# STRIPE_WEBHOOK_SECRET = 'your_stripe_webhook_secret'
