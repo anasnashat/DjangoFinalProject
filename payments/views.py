@@ -59,15 +59,18 @@ def payment_success(request, slug):
         # print(session)
         if session.payment_status == 'paid':
             payment_intent = stripe.PaymentIntent.retrieve(session.payment_intent)
-            payment  = Payment.objects.create(
-                project=project,
-                user=request.user,
-                amount=payment_intent.amount / 100,
-                status=payment_intent.status,
-                stripe_payment_id=payment_intent.id
-            )
 
-            print(payment)
+            if not Payment.objects.filter(stripe_payment_id=payment_intent.id, user=request.user).exists():
+                payment  = Payment.objects.create(
+                    project=project,
+                    user=request.user,
+                    amount=payment_intent.amount / 100,
+                    status=payment_intent.status,
+                    stripe_payment_id=payment_intent.id
+                )
+
+                print(payment)
+            print("exist")
 
 
     return render(request, 'payments/success.html', {'project': project})
