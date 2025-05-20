@@ -4,6 +4,7 @@ import stripe
 from django.urls import reverse
 
 from donation_project import settings
+from .models import Payment
 from projects.models import Project
 
 
@@ -16,10 +17,8 @@ def create_donation_session(request, slug):
     project = get_object_or_404(Project, slug=slug)
 
     if 'localhost' in request.get_host() or '127.0.0.1' in request.get_host():
-        # Use a placeholder image for local development
         image_url = "https://via.placeholder.com/300"
     else:
-        # Use the actual project image in production
         image_url = request.build_absolute_uri(project.image.url)
 
     donation_session = stripe.checkout.Session.create(
@@ -39,7 +38,8 @@ def create_donation_session(request, slug):
         mode='payment',
         success_url=request.build_absolute_uri(
             reverse('payment-success', kwargs={'slug': project.slug})
-        ),
+        ) + "?session_id={CHECKOUT_SESSION_ID}",
+
         cancel_url=request.build_absolute_uri(
             reverse('project-detail', kwargs={'slug': project.slug})
         ),
@@ -52,6 +52,24 @@ def create_donation_session(request, slug):
 @login_required
 def payment_success(request, slug):
     project = get_object_or_404(Project, slug=slug)
+    session_id = request.GET.get('session_id')
+
+    if session_id:
+        session = stripe.checkout.Session.retrieve(session_id)
+        # print(session)
+        if session.payment_status == 'paid':
+            payment_intent = stripe.PaymentIntent.retrieve(session.payment_intent)
+            payment  = Payment.objects.create(
+                project=project,
+                user=request.user,
+                amount=payment_intent.amount / 100,
+                status=payment_intent.status,
+                stripe_payment_id=payment_intent.id
+            )
+
+            print(payment)
+
+
     return render(request, 'payments/success.html', {'project': project})
 
 
