@@ -4,6 +4,7 @@
 {% block title %}Create Project{% endblock %}
 
 {% block content %}
+
 <div class="container mt-4">
     <div class="row">
         <div class="col-md-8 offset-md-2">
@@ -26,13 +27,22 @@
                         </div>
 
                         <div class="form-group mb-3">
-                            <label for="{{ form.image.id_for_label }}">Project Image</label>
-                            {{ form.image|add_class:"form-control" }}
-                            {% if form.image.errors %}
-                                <div class="text-danger">
-                                    {{ form.image.errors }}
-                                </div>
-                            {% endif %}
+                            <h3>Project Images</h3>
+                            {{ images.management_form }}
+
+                            <div id="image-forms-container">
+                                {% for form in images %}
+                                    <div class="form-group mb-3 image-form d-flex align-items-center">
+                                        {{ form.image.label_tag }}
+                                        {{ form.image|add_class:"form-control d-inline-block w-75 me-2" }}
+                                        <button type="button" class="btn btn-danger delete-image-field me-2">−</button>
+                                        <button type="button" class="btn btn-success add-image-field">+</button>
+                                        {% if form.image.errors %}
+                                            <div class="text-danger">{{ form.image.errors }}</div>
+                                        {% endif %}
+                                    </div>
+                                {% endfor %}
+                            </div>
                         </div>
 
                         <div class="form-group mb-3">
@@ -134,5 +144,105 @@
         </div>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const addButtonClass = 'add-image-field';
+    const deleteButtonClass = 'delete-image-field';
+    const container = document.getElementById('image-forms-container');
+    const totalFormsInput = document.querySelector('input[name="images-TOTAL_FORMS"]');
+
+    const emptyFormTemplate = `{{ images.empty_form|escapejs }}`;
+
+    function updateElementIndex(el, prefix, index) {
+        const idRegex = new RegExp(`(${prefix}-\\d+)`);
+        const replacement = `${prefix}-${index}`;
+        if (el.id) el.id = el.id.replace(idRegex, replacement);
+        if (el.name) el.name = el.name.replace(idRegex, replacement);
+        if (el.htmlFor) el.htmlFor = el.htmlFor.replace(idRegex, replacement);
+    }
+
+    function lastImageHasFile() {
+        const imageForms = container.querySelectorAll('.image-form');
+        if (imageForms.length === 0) return true;
+        const lastInput = imageForms[imageForms.length - 1].querySelector('input[type="file"]');
+        return lastInput && lastInput.value.trim() !== '';
+    }
+
+    container.addEventListener('click', function(event) {
+        const target = event.target;
+
+        if (target.classList.contains(addButtonClass)) {
+            event.preventDefault();
+
+            if (!lastImageHasFile()) {
+                alert('Please select an image before adding another field.');
+                return;
+            }
+
+            let formCount = parseInt(totalFormsInput.value);
+
+            const newFormDiv = document.createElement('div');
+            newFormDiv.classList.add('form-group', 'mb-3', 'image-form', 'd-flex', 'align-items-center');
+
+            let newFormHtml = emptyFormTemplate.replace(/__prefix__/g, formCount);
+
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = newFormHtml;
+
+            const label = tempDiv.querySelector('label');
+            const input = tempDiv.querySelector('input[type="file"]');
+
+            input.classList.add('form-control', 'd-inline-block', 'w-75', 'me-2');
+
+            newFormDiv.appendChild(label);
+            newFormDiv.appendChild(input);
+
+            const deleteBtn = document.createElement('button');
+            deleteBtn.type = 'button';
+            deleteBtn.className = 'btn btn-danger delete-image-field me-2';
+            deleteBtn.style.height = '38px';
+            deleteBtn.style.lineHeight = '1';
+            deleteBtn.style.fontSize = '1.2rem';
+            deleteBtn.textContent = '−';
+
+            const addBtn = document.createElement('button');
+            addBtn.type = 'button';
+            addBtn.className = 'btn btn-success add-image-field';
+            addBtn.style.height = '38px';
+            addBtn.style.lineHeight = '1';
+            addBtn.style.fontSize = '1.2rem';
+            addBtn.textContent = '+';
+
+            newFormDiv.appendChild(deleteBtn);
+            newFormDiv.appendChild(addBtn);
+
+            container.appendChild(newFormDiv);
+
+            totalFormsInput.value = formCount + 1;
+        }
+
+        if (target.classList.contains(deleteButtonClass)) {
+            event.preventDefault();
+
+            const imageForms = container.querySelectorAll('.image-form');
+
+            if (imageForms.length > 1) {
+                const formGroup = target.closest('.image-form');
+                formGroup.remove();
+
+                let forms = container.querySelectorAll('.image-form');
+                totalFormsInput.value = forms.length;
+
+                forms.forEach((formDiv, index) => {
+                    formDiv.querySelectorAll('input, label').forEach(el => updateElementIndex(el, 'images', index));
+                });
+            } else {
+                alert('At least one image field is required.');
+            }
+        }
+    });
+});
+</script>
+
 {% endblock %}
-{#{% endblock %}#}

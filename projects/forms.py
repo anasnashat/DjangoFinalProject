@@ -1,7 +1,9 @@
 from django import forms
 from django.core.exceptions import ValidationError
-from .models import Project
-
+from .models import Project, ProjectImage
+from django.forms import modelformset_factory
+from django.forms import inlineformset_factory
+from .models import Project, ProjectImage
 class ProjectForm(forms.ModelForm):
     starting_date = forms.DateField(
         widget=forms.DateInput(attrs={'type': 'date', 'class': 'form-control'})
@@ -12,7 +14,7 @@ class ProjectForm(forms.ModelForm):
     
     class Meta:
         model = Project
-        fields = ['title', 'image', 'details', 'total_target', 'starting_date', 
+        fields = ['title', 'details', 'total_target', 'starting_date', 
                   'ending_date', 'is_active', 'category', 'tags', 'is_featured']
         widgets = {
             'details': forms.Textarea(attrs={'rows': 4}),
@@ -25,3 +27,13 @@ class ProjectForm(forms.ModelForm):
         
         if starting_date and ending_date and ending_date < starting_date:
             raise ValidationError("Ending date cannot be before the starting date.")
+
+class ProjectImageForm(forms.ModelForm):
+    class Meta:
+        model = ProjectImage
+        fields = ['image'] 
+
+ProjectImageFormSet = inlineformset_factory(
+    Project, ProjectImage, form=ProjectImageForm,
+    fields=['image'], extra=1, can_delete=True
+)

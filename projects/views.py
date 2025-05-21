@@ -2,7 +2,9 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from django.urls import reverse_lazy
 from projects.models import Project
 from projects.forms import ProjectForm
-
+from django.forms import modelformset_factory
+from .forms import ProjectForm, ProjectImageFormSet
+from projects.models import ProjectImage
 
 class ProjectListView(ListView):
     model = Project
@@ -18,9 +20,25 @@ class ProjectCreateView(CreateView):
     form_class = ProjectForm
     success_url = reverse_lazy('project-list')
 
-    def form_valid(self, form):
-        form.instance.created_by = self.request.user
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        if self.request.POST:
+            data['images'] = ProjectImageFormSet(self.request.POST, self.request.FILES, queryset=ProjectImage.objects.none())
+        else:
+            data['images'] = ProjectImageFormSet(queryset=ProjectImage.objects.none())
+        return data
+def form_valid(self, form):
+    context = self.get_context_data()
+    images = context['images']
+    form.instance.created_by = self.request.user
+    
+    if images.is_valid():
+        self.object = form.save()
+        images.instance = self.object
+        images.save()
         return super().form_valid(form)
+    else:
+        return self.form_invalid(form)
 
 
 class ProjectDetailView(DetailView):

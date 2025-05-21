@@ -1,74 +1,136 @@
 {% extends 'base.html' %}
+{% load humanize %}
 
 {% block title %}{{ project.title }}{% endblock %}
 
 {% block content %}
-<div class="container mt-4">
-    <div class="row">
-        <div class="col-md-8 offset-md-2">
-            <div class="card">
-                {% if project.image %}
-                    <img src="{{ project.image.url }}" class="card-img-top" alt="{{ project.title }}">
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card shadow-lg border-0 rounded-4">
+
+                {% if project.images.all %}
+                <div id="projectCarousel" class="carousel slide rounded-top overflow-hidden" data-bs-ride="carousel">
+                    {% if project.images.all|length > 1 %}
+                    <div class="carousel-indicators">
+                        {% for img in project.images.all %}
+                        <button type="button" data-bs-target="#projectCarousel" data-bs-slide-to="{{ forloop.counter0 }}"
+                            class="{% if forloop.first %}active{% endif %}" aria-current="{% if forloop.first %}true{% endif %}"
+                            aria-label="Slide {{ forloop.counter }}"></button>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    <div class="carousel-inner">
+                        {% for img in project.images.all %}
+                        <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                            <img src="{{ img.image.url }}" class="d-block w-100 object-fit-cover" style="height: 500px;" alt="Project image">
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% if project.images.all|length > 1 %}
+                    <button class="carousel-control-prev" type="button" data-bs-target="#projectCarousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon bg-dark rounded-circle p-3" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#projectCarousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon bg-dark rounded-circle p-3" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                    {% endif %}
+                </div>
                 {% endif %}
-                <div class="card-body">
-                    <h1 class="card-title">{{ project.title }}</h1>
-                    <p class="text-muted">
-                        Created by {{ project.created_by.username }} on {{ project.created_at|date:"F d, Y" }}
-                    </p>
+
+                <div class="card-body p-5">
+                    <h1 class="fw-bold">{{ project.title }}</h1>
+                    <p class="text-muted">By <strong>{{ project.created_by.username }}</strong> on {{ project.created_at|date:"F d, Y" }}</p>
                     <hr>
-                    <div class="mb-4">
-                        <h4>Project Details</h4>
-                        <p>{{ project.details|linebreaks }}</p>
-                    </div>
-                    
-                    <div class="row mb-4">
-                        <div class="col-md-6">
-                            <h5>Target Amount</h5>
-                            <p>${{ project.total_target }}</p>
+
+                    <h4 class="fw-semibold mb-3">📘 Project Details</h4>
+                    <p class="text-secondary">{{ project.details|linebreaks }}</p>
+
+                    <div class="row text-center my-4">
+                        <div class="col-md-6 mb-3">
+                            <div class="border rounded p-3 bg-light shadow-sm">
+                                <h6 class="text-uppercase text-muted">Target</h6>
+                                <h5 class="text-success">${{ project.total_target|floatformat:2|intcomma }}</h5>
+                            </div>
                         </div>
-                        <div class="col-md-6">
-                            <h5>Dates</h5>
-                            <p>Start: {{ project.starting_date|date:"M d, Y" }}<br>
-                               End: {{ project.ending_date|date:"M d, Y" }}</p>
-                        </div>
-                    </div>
-                    
-                    <div class="mb-4">
-                        <h5>Category</h5>
-                        <p>{{ project.category.name }}</p>
-                    </div>
-                    
-                    <div class="mb-4">
-                        <h5>Tags</h5>
-                        <div>
-                            {% for tag in project.tags.all %}
-                                <span class="badge bg-secondary me-1">{{ tag.name }}</span>
-                            {% empty %}
-                                <span class="text-muted">No tags available</span>
-                            {% endfor %}
-                        </div>
-                    </div>
-                    
-                    <div class="mb-4">
-                        <h5>Progress</h5>
-                        <div class="progress">
-                            <div class="progress-bar" role="progressbar"
-                                 style="width: {{ project.progress_percentage|default:0 }}%;"
-                                 aria-valuenow="{{ project.progress_percentage|default:0 }}"
-                                 aria-valuemin="0" aria-valuemax="100">
-                                {{ project.progress_percentage|default:0 }}%
+                        <div class="col-md-6 mb-3">
+                            <div class="border rounded p-3 bg-light shadow-sm">
+                                <h6 class="text-uppercase text-muted">Dates</h6>
+                                <p class="mb-0">Start: {{ project.starting_date|date:"M d, Y" }}</p>
+                                <p class="mb-0">End: {{ project.ending_date|date:"M d, Y" }}</p>
                             </div>
                         </div>
                     </div>
-                    
-                    <div class="d-flex justify-content-between mt-4">
-                        <a href="{% url 'project-list' %}" class="btn btn-secondary">Back to Projects</a>
-                        
+
+                    <div class="mb-4">
+                        <h5 class="fw-semibold">📂 Category</h5>
+                        <p class="mb-0">{{ project.category.name }}</p>
+                    </div>
+
+                    <div class="mb-4">
+                        <h5 class="fw-semibold">🏷️ Tags</h5>
+                        {% if project.tags.all %}
+                        <div>
+                            {% for tag in project.tags.all %}
+                            <span class="badge bg-secondary me-1">{{ tag.name }}</span>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        <p class="text-muted">No tags available</p>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-4">
+                        <h5 class="fw-semibold">📊 Progress</h5>
+                        <p>
+                            <strong>${{ project.amount_raised|floatformat:2|intcomma }}</strong> raised of
+                            <strong>${{ project.total_target|floatformat:2|intcomma }}</strong>
+                        </p>
+                        <div class="progress rounded-pill" style="height: 25px;">
+                            <div class="progress-bar bg-success" role="progressbar"
+                                style="width: {{ project.progress_percentage }}%;"
+                                aria-valuenow="{{ project.progress_percentage }}" aria-valuemin="0" aria-valuemax="100">
+                                {{ project.progress_percentage }}%
+                            </div>
+                        </div>
+                    </div>
+
+                    {% if user.is_authenticated %}
+                    <div class="mt-5">
+                        <h5 class="fw-semibold">💝 Donate to this Project</h5>
+                        <form method="post" action="{% url 'donation-create' project.slug %}">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <label for="amount" class="form-label">Amount (USD)</label>
+                                <input type="number" id="amount" name="amount" class="form-control" required min="1" step="0.01">
+                            </div>
+                            <button type="submit" class="btn btn-success">Donate</button>
+                        </form>
+                    </div>
+                    {% else %}
+                    <div class="alert alert-warning text-center mt-4">
+                        <strong>Note:</strong> You must <a href="{% url 'login' %}?next={{ request.path }}">log in</a> to donate.
+                    </div>
+                    {% endif %}
+
+                    <div class="d-flex justify-content-between align-items-center mt-5">
+                        <a href="{% url 'project-list' %}" class="btn btn-outline-secondary">← Back to Projects</a>
+
                         {% if user == project.created_by %}
                         <div>
-                            <a href="{% url 'project-update' project.slug %}" class="btn btn-primary">Edit</a>
-                            <a href="{% url 'project-delete' project.slug %}" class="btn btn-danger">Delete</a>
+                            <a href="{% url 'project-update' project.slug %}" class="btn btn-outline-primary me-2">Edit</a>
+                            <a href="{% url 'project-delete' project.slug %}" class="btn btn-outline-danger">Delete</a>
                         </div>
+                        {% if project.progress_percentage < 25 %}
+        <form action="{% url 'project-delete' project.slug %}" method="post" class="d-inline">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-warning" onclick="return confirm('Are you sure you want to cancel this project?');">
+                Cancel Project
+            </button>
+        </form>
+        {% endif %}
                         {% endif %}
                     </div>
                 </div>

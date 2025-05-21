@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.admin',
     'widget_tweaks',
+    'django.contrib.humanize',
     'user_profiles',
     'categories',
     'donations',
