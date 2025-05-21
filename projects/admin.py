@@ -12,5 +12,6 @@ class ProjectAdmin(admin.ModelAdmin):
     search_fields = ('title', 'details', 'created_by__username', 'category__name')
     readonly_fields = ('created_at', 'updated_at')
     filter_horizontal = ('tags',)
+    prepopulated_fields = {'slug': ('title',)}
     inlines = [ProjectImageInline]
 

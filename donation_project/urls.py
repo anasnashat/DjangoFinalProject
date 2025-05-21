@@ -23,7 +23,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('projects/', include('projects.urls')),
     path('payments/', include('payments.urls')),
-    path('donations/', include('donations.urls')),
+    path('donations/', include('donations.urls',namespace='donations')),
 ]
 
 
