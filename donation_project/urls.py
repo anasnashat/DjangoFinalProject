@@ -20,9 +20,10 @@ from django.conf.urls.static import static
 from donation_project import settings
 
 urlpatterns = [
-       path('admin/', admin.site.urls),
-       path('projects/', include('projects.urls')),
-       path('payments/', include('payments.urls')),
+        path('admin/', admin.site.urls),
+        path('projects/', include('projects.urls')),
+        path('payments/', include('payments.urls')),
+        path('users/', include('users.urls')),
 ]
 
 
