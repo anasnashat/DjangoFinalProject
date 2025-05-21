@@ -1,6 +1,6 @@
-{% extends 'base.html' %}
+{% extends 'base.html' %} 
 {% load humanize %}
-{% load static %}
+{% load static %} 
 {% block title %}{{ project.title }}{% endblock %}
 
 {% block content %}
@@ -15,29 +15,34 @@
                         {% if project.images.all|length > 1 %}
                         <div class="carousel-indicators">
                             {% for img in project.images.all %}
-                            <button type="button" data-bs-target="#projectCarousel" 
-                                    data-bs-slide-to="{{ forloop.counter0 }}"
-                                    class="{% if forloop.first %}active{% endif %}" 
-                                    aria-current="{% if forloop.first %}true{% endif %}"></button>
+                            <button type="button" data-bs-target="#projectCarousel"
+                                data-bs-slide-to="{{ forloop.counter0 }}"
+                                class="{% if forloop.first %}active{% endif %}"
+                                aria-current="{% if forloop.first %}true{% endif %}"></button>
                             {% endfor %}
                         </div>
                         {% endif %}
-                        
+
                         <div class="carousel-inner rounded-top">
                             {% for img in project.images.all %}
                             <div class="carousel-item {% if forloop.first %}active{% endif %}">
-                                <img src="{{ img.image.url }}" class="d-block w-100" style="height: 500px; object-fit: cover;" alt="Project image">
+                                <img src="{{ img.image.url }}" class="d-block w-100"
+                                    style="height: 500px; object-fit: cover" alt="Project image" />
                             </div>
                             {% endfor %}
                         </div>
-                        
+
                         {% if project.images.all|length > 1 %}
-                        <button class="carousel-control-prev" type="button" data-bs-target="#projectCarousel" data-bs-slide="prev">
-                            <span class="carousel-control-prev-icon bg-dark rounded-circle p-2" aria-hidden="true"></span>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#projectCarousel"
+                            data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon bg-dark rounded-circle p-2"
+                                aria-hidden="true"></span>
                             <span class="visually-hidden">Previous</span>
                         </button>
-                        <button class="carousel-control-next" type="button" data-bs-target="#projectCarousel" data-bs-slide="next">
-                            <span class="carousel-control-next-icon bg-dark rounded-circle p-2" aria-hidden="true"></span>
+                        <button class="carousel-control-next" type="button" data-bs-target="#projectCarousel"
+                            data-bs-slide="next">
+                            <span class="carousel-control-next-icon bg-dark rounded-circle p-2"
+                                aria-hidden="true"></span>
                             <span class="visually-hidden">Next</span>
                         </button>
                         {% endif %}
@@ -47,11 +52,14 @@
 
                 <div class="card-body p-4 p-md-5">
                     <div class="d-flex align-items-center mb-4">
-                        <img src="{% static 'images/default-avatar.png' %}" alt="Creator avatar" 
-                            class="rounded-circle me-3" width="48" height="48">
+                        <img src="{% static 'images/default-avatar.png' %}" alt="Creator avatar"
+                            class="rounded-circle me-3" width="48" height="48" />
                         <div>
                             <h1 class="h3 mb-1">{{ project.title }}</h1>
-                            <p class="text-muted mb-0">By <strong>{{ project.created_by.username }}</strong> · {{ project.created_at|date:"F d, Y" }}</p>
+                            <p class="text-muted mb-0">
+                                By <strong>{{ project.created_by.username }}</strong> · {{
+                                project.created_at|date:"F d, Y" }}
+                            </p>
                         </div>
                     </div>
 
@@ -59,29 +67,37 @@
                         <h4 class="h5 mb-3">
                             <i class="bi bi-info-circle text-primary me-2"></i>Project Details
                         </h4>
-                        <div class="text-muted lh-base">{{ project.details|linebreaks }}</div>
+                        <div class="text-muted lh-base">
+                            {{ project.details|linebreaks }}
+                        </div>
                     </div>
 
                     <div class="row g-3 mb-4 pb-3 border-bottom align-items-stretch">
-  <div class="col-md-6 d-flex">
-    <div class="p-3 bg-light rounded h-100 w-100">
-      <h6 class="text-uppercase text-muted small mb-2">
-        <i class="bi bi-currency-dollar me-1"></i>Target Amount
-      </h6>
-      <div class="h4 text-success">${{ project.total_target|floatformat:2|intcomma }}</div>
-    </div>
-  </div>
-  <div class="col-md-6 d-flex">
-    <div class="p-3 bg-light rounded h-100 w-100">
-      <h6 class="text-uppercase text-muted small mb-2">
-        <i class="bi bi-calendar-event me-1"></i>Duration
-      </h6>
-      <p class="mb-1"><strong>Start:</strong> {{ project.starting_date|date:"M d, Y" }}</p>
-      <p class="mb-0"><strong>End:</strong> {{ project.ending_date|date:"M d, Y" }}</p>
-    </div>
-  </div>
-</div>
-
+                        <div class="col-md-6 d-flex">
+                            <div class="p-3 bg-light rounded h-100 w-100">
+                                <h6 class="text-uppercase text-muted small mb-2">
+                                    <i class="bi bi-currency-dollar me-1"></i>Target Amount
+                                </h6>
+                                <div class="h4 text-success">
+                                    ${{ project.total_target|floatformat:2|intcomma }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 d-flex">
+                            <div class="p-3 bg-light rounded h-100 w-100">
+                                <h6 class="text-uppercase text-muted small mb-2">
+                                    <i class="bi bi-calendar-event me-1"></i>Duration
+                                </h6>
+                                <p class="mb-1">
+                                    <strong>Start:</strong> {{ project.starting_date|date:"M d, Y"
+                                    }}
+                                </p>
+                                <p class="mb-0">
+                                    <strong>End:</strong> {{ project.ending_date|date:"M d, Y" }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
 
                     <div class="mb-4 pb-3 border-bottom">
                         <h5 class="h5 mb-3">
@@ -91,13 +107,13 @@
                             <span class="badge bg-primary me-2">{{ project.category.name }}</span>
                         </div>
                         {% if project.tags.all %}
-                            <div class="d-flex flex-wrap">
-                                {% for tag in project.tags.all %}
-                                <span class="badge bg-light text-dark me-2 mb-2">{{ tag.name }}</span>
-                                {% endfor %}
-                            </div>
+                        <div class="d-flex flex-wrap">
+                            {% for tag in project.tags.all %}
+                            <span class="badge bg-light text-dark me-2 mb-2">{{ tag.name }}</span>
+                            {% endfor %}
+                        </div>
                         {% else %}
-                            <p class="text-muted">No tags available</p>
+                        <p class="text-muted">No tags available</p>
                         {% endif %}
                     </div>
 
@@ -106,14 +122,15 @@
                             <i class="bi bi-graph-up text-primary me-2"></i>Funding Progress
                         </h5>
                         <div class="d-flex justify-content-between mb-2">
-                            <span class="text-success fw-semibold">${{ project.amount_raised|floatformat:2|intcomma }} raised</span>
+                            <span class="text-success fw-semibold">${{ project.amount_raised|floatformat:2|intcomma }}
+                                raised</span>
                             <span class="text-muted">${{ project.total_target|floatformat:2|intcomma }} goal</span>
                         </div>
                         <div class="progress mb-2">
-                            <div class="progress-bar bg-success" role="progressbar" 
+                            <div class="progress-bar bg-success" role="progressbar"
                                 style="width: {{ project.progress_percentage }}%"
-                                aria-valuenow="{{ project.progress_percentage }}" 
-                                aria-valuemin="0" aria-valuemax="100"></div>
+                                aria-valuenow="{{ project.progress_percentage }}" aria-valuemin="0" aria-valuemax="100">
+                            </div>
                         </div>
                         <div class="text-center">
                             <span class="badge bg-success">{{ project.progress_percentage }}% funded</span>
@@ -123,17 +140,19 @@
                     {% if user.is_authenticated %}
                     <div class="mb-4">
                         <h5 class="h5 mb-3">
-                            <i class="bi bi-heart-fill text-danger me-2"></i>Support This Project
+                            <i class="bi bi-heart-fill text-danger me-2"></i>Support This
+                            Project
                         </h5>
                         <div class="p-4 donation-form rounded">
-                            <form id="donation-form" method="post" action="{% url 'donations:donation-create' project.slug %}">
+                            <form id="donation-form" method="post"
+                                action="{% url 'donations:donation-create' project.slug %}">
                                 {% csrf_token %}
                                 <div class="mb-3">
                                     <label for="amount" class="form-label fw-semibold">Donation Amount (USD)</label>
                                     <div class="input-group">
                                         <span class="input-group-text">$</span>
-                                        <input type="number" id="amount" name="amount" class="form-control" 
-                                            required min="1" step="0.01" placeholder="Enter amount">
+                                        <input type="number" id="amount" name="amount" class="form-control" required
+                                            min="1" step="0.01" placeholder="Enter amount" />
                                     </div>
                                     <small class="text-muted">Minimum donation is $1.00</small>
                                 </div>
@@ -146,11 +165,14 @@
                     {% else %}
                     <div class="alert alert-warning mt-4">
                         <i class="bi bi-exclamation-circle me-2"></i>
-                        <strong>Note:</strong> You must <a href="{% url 'login' %}?next={{ request.path }}" class="alert-link">log in</a> to support this project.
+                        <strong>Note:</strong> You must
+                        <a href="{% url 'login' %}?next={{ request.path }}" class="alert-link">log in</a>
+                        to support this project.
                     </div>
                     {% endif %}
 
-                    <div class="d-flex flex-column flex-md-row justify-content-between align-items-center pt-3 border-top">
+                    <div
+                        class="d-flex flex-column flex-md-row justify-content-between align-items-center pt-3 border-top">
                         <a href="{% url 'project-list' %}" class="btn btn-outline-secondary mb-3 mb-md-0">
                             <i class="bi bi-arrow-left me-2"></i>Back to Projects
                         </a>
@@ -163,14 +185,15 @@
                             <a href="{% url 'project-delete' project.slug %}" class="btn btn-outline-danger me-2 mb-2">
                                 <i class="bi bi-trash me-1"></i>Delete
                             </a>
-                            {% if project.progress_percentage < 25 %}
-                            <form action="{% url 'project-delete' project.slug %}" method="post" class="d-inline mb-2">
+                            {% if project.progress_percentage < 25 %} <form
+                                action="{% url 'project-delete' project.slug %}" method="post" class="d-inline mb-2">
                                 {% csrf_token %}
-                                <button type="submit" class="btn btn-warning" onclick="return confirm('Are you sure you want to cancel this project?');">
+                                <button type="submit" class="btn btn-warning"
+                                    onclick="return confirm('Are you sure you want to cancel this project?');">
                                     <i class="bi bi-x-circle me-1"></i>Cancel Project
                                 </button>
-                            </form>
-                            {% endif %}
+                                </form>
+                                {% endif %}
                         </div>
                         {% endif %}
                     </div>
@@ -186,7 +209,10 @@
             <div class="modal-body text-center p-5">
                 <i class="bi bi-check-circle-fill text-success display-4 mb-4"></i>
                 <h2 class="h4 mb-3">Thank You!</h2>
-                <p class="mb-4">Your generous donation to <strong>{{ project.title }}</strong> will make a real difference.</p>
+                <p class="mb-4">
+                    Your generous donation to <strong>{{ project.title }}</strong> will
+                    make a real difference.
+                </p>
                 <button type="button" class="btn btn-success px-4" data-bs-dismiss="modal">
                     Continue
                 </button>
@@ -197,98 +223,132 @@
 
 {% block scripts %}
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const form = document.getElementById('donation-form');
-    const modalElement = document.getElementById('thankYouModal');
-    const modal = new bootstrap.Modal(modalElement);
+    document.addEventListener("DOMContentLoaded", function () {
+        const form = document.getElementById("donation-form");
+        const modalElement = document.getElementById("thankYouModal");
+        const modal = new bootstrap.Modal(modalElement);
 
-    const urlParams = new URLSearchParams(window.location.search);
-    const sessionId = urlParams.get('session_id');
-    if (sessionId) {
-        fetch(`{% url 'donations:donation-success' project.slug %}?session_id=${sessionId}`, {
-            method: 'GET',
-            headers: {
-                'X-CSRFToken': '{{ csrf_token }}'
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                const progressBar = document.querySelector('.progress-bar');
-                const amountRaised = document.querySelector('.amount-raised');
-                const newAmount = parseFloat(data.amount_raised).toLocaleString('en-US', {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2
+        const urlParams = new URLSearchParams(window.location.search);
+        const sessionId = urlParams.get("session_id");
+        if (sessionId) {
+            fetch(
+                `{% url 'donations:donation-success' project.slug %}?session_id=${sessionId}`,
+                {
+                    method: "GET",
+                    headers: {
+                        "X-CSRFToken": "{{ csrf_token }}",
+                    },
+                }
+            )
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data.success) {
+                        const progressBar = document.querySelector(".progress-bar");
+                        const amountRaised = document.querySelector(".amount-raised");
+                        const newAmount = parseFloat(data.amount_raised).toLocaleString(
+                            "en-US",
+                            {
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2,
+                            }
+                        );
+
+                        progressBar.style.width = `${data.progress_percentage}%`;
+                        progressBar.setAttribute("aria-valuenow", data.progress_percentage);
+                        document.querySelector(
+                            ".badge.bg-success"
+                        ).textContent = `${data.progress_percentage}% funded`;
+
+                        document
+                            .querySelectorAll(".text-success.fw-semibold")
+                            .forEach((el) => {
+                                el.textContent = `$${newAmount} raised`;
+                            });
+
+                        modal.show();
+
+                        window.history.replaceState(
+                            {},
+                            document.title,
+                            window.location.pathname
+                        );
+
+                        document
+                            .querySelector("#thankYouModal .btn-success")
+                            .addEventListener("click", function () {
+                                modal.hide();
+                                document.body.classList.remove("modal-open");
+                                document
+                                    .querySelectorAll(".modal-backdrop")
+                                    .forEach((el) => el.remove());
+                            });
+                    } else {
+                        showToast(
+                            "Error verifying payment",
+                            data.error || "Please try again.",
+                            "danger"
+                        );
+                    }
+                })
+                .catch((error) => {
+                    console.error("Error:", error);
+                    showToast(
+                        "Error",
+                        "An error occurred while verifying the payment.",
+                        "danger"
+                    );
                 });
-                
-                progressBar.style.width = `${data.progress_percentage}%`;
-                progressBar.setAttribute('aria-valuenow', data.progress_percentage);
-                document.querySelector('.progress-container .badge').textContent = `${data.progress_percentage}% funded`;
-                
-                document.querySelectorAll('.text-success.fw-semibold').forEach(el => {
-                    el.textContent = `$${newAmount} raised`;
-                });
-                
-                modal.show();
-
-                window.history.replaceState({}, document.title, window.location.pathname);
-
-                document.querySelector('#thankYouModal .btn-primary').addEventListener('click', function () {
-                    modal.hide();
-                    document.body.classList.remove('modal-open');
-                    document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
-                });
-            } else {
-                showToast('Error verifying payment', data.error || 'Please try again.', 'danger');
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            showToast('Error', 'An error occurred while verifying the payment.', 'danger');
-        });
-    }
-
-    form.addEventListener('submit', function(event) {
-        event.preventDefault();
-        const amountInput = document.getElementById('amount');
-        const amount = parseFloat(amountInput.value);
-
-        if (isNaN(amount) || amount < 1) {
-            showToast('Invalid Amount', 'Please enter a valid donation amount (minimum $1).', 'warning');
-            amountInput.focus();
-            return;
         }
 
-        const formData = new FormData(form);
-        fetch(form.action, {
-            method: 'POST',
-            body: formData,
-            headers: {
-                'X-CSRFToken': form.querySelector('[name=csrfmiddlewaretoken]').value
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                window.location.href = data.checkout_url;
-            } else {
-                showToast('Error', data.error || 'Invalid donation amount.', 'danger');
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            showToast('Error', 'An error occurred. Please try again.', 'danger');
-        });
-    });
+        form.addEventListener("submit", function (event) {
+            event.preventDefault();
+            const amountInput = document.getElementById("amount");
+            const amount = parseFloat(amountInput.value);
 
-    function showToast(title, message, type) {
-        if (typeof bootstrap !== 'undefined' && bootstrap.Toast) {
-            const toastEl = document.createElement('div');
-            toastEl.className = `toast align-items-center text-white bg-${type} border-0`;
-            toastEl.setAttribute('role', 'alert');
-            toastEl.setAttribute('aria-live', 'assertive');
-            toastEl.setAttribute('aria-atomic', 'true');
-            toastEl.innerHTML = `
+            if (isNaN(amount) || amount < 1) {
+                showToast(
+                    "Invalid Amount",
+                    "Please enter a valid donation amount (minimum $1).",
+                    "warning"
+                );
+                amountInput.focus();
+                return;
+            }
+
+            const formData = new FormData(form);
+            fetch(form.action, {
+                method: "POST",
+                body: formData,
+                headers: {
+                    "X-CSRFToken": form.querySelector("[name=csrfmiddlewaretoken]").value,
+                },
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data.success) {
+                        window.location.href = data.checkout_url;
+                    } else {
+                        showToast(
+                            "Error",
+                            data.error || "Invalid donation amount.",
+                            "danger"
+                        );
+                    }
+                })
+                .catch((error) => {
+                    console.error("Error:", error);
+                    showToast("Error", "An error occurred. Please try again.", "danger");
+                });
+        });
+
+        function showToast(title, message, type) {
+            if (typeof bootstrap !== "undefined" && bootstrap.Toast) {
+                const toastEl = document.createElement("div");
+                toastEl.className = `toast align-items-center text-white bg-${type} border-0`;
+                toastEl.setAttribute("role", "alert");
+                toastEl.setAttribute("aria-live", "assertive");
+                toastEl.setAttribute("aria-atomic", "true");
+                toastEl.innerHTML = `
                 <div class="d-flex">
                     <div class="toast-body">
                         <strong>${title}</strong><br>${message}
@@ -296,18 +356,17 @@ document.addEventListener('DOMContentLoaded', function() {
                     <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
                 </div>
             `;
-            document.body.appendChild(toastEl);
-            const toast = new bootstrap.Toast(toastEl);
-            toast.show();
-            
-            toastEl.addEventListener('hidden.bs.toast', function() {
-                document.body.removeChild(toastEl);
-            });
-        } else {
-            alert(`${title}: ${message}`);
+                document.body.appendChild(toastEl);
+                const toast = new bootstrap.Toast(toastEl);
+                toast.show();
+
+                toastEl.addEventListener("hidden.bs.toast", function () {
+                    document.body.removeChild(toastEl);
+                });
+            } else {
+                alert(`${title}: ${message}`);
+            }
         }
-    }
-});
+    });
 </script>
-{% endblock %}
-{% endblock %}
+{% endblock %} {% endblock %}
