@@ -18,12 +18,17 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls.static import static
 from donation_project import settings
+from django.http import HttpResponse
+
+def temporary_login_view(request):
+    return HttpResponse("Login page placeholder")
 
 urlpatterns = [
-        path('admin/', admin.site.urls),
-        path('projects/', include('projects.urls')),
-        path('payments/', include('payments.urls')),
-        path('users/', include('users.urls')),
+    path('login/', temporary_login_view, name='login'),
+    path('admin/', admin.site.urls),
+    path('projects/', include('projects.urls')),
+    path('payments/', include('payments.urls')),
+    path('donations/', include('donations.urls',namespace='donations')),
 ]
 
 
