@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h2>My Projects</h2>
+        </div>
+        <div class="col-md-4 text-right">
+            <a href="{% url 'create_project' %}" class="btn btn-primary">Create New Project</a>
+            <a href="{% url 'profile' %}" class="btn btn-secondary ml-2">Back to Profile</a>
+        </div>
+    </div>
+    
+    {% if projects %}
+        <div class="row">
+            {% for project in projects %}
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        {% if project.images.first %}
+                            <img src="{{ project.images.first.image.url }}" class="card-img-top" alt="{{ project.title }}">
+                        {% else %}
+                            <img src="{% static 'images/default_project.jpg' %}" class="card-img-top" alt="Default Project Image">
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">{{ project.title }}</h5>
+                            <p class="card-text">{{ project.details|truncatechars:150 }}</p>
+                            <p class="card-text">
+                                <small class="text-muted">Category: {{ project.category.name }}</small>
+                            </p>
+                            <!-- <div class="progress mb-3">
+                                {% with percentage=project.funded_percentage %}
+                                <div class="progress-bar" role="progressbar" style="width: {{ percentage }}%;" 
+                                    aria-valuenow="{{ percentage }}" aria-valuemin="0" aria-valuemax="100">{{ percentage }}%</div>
+                                {% endwith %}
+                            </div> -->
+                            <p class="card-text">
+                                <small class="text-muted">Target: {{ project.total_target }} EGP</small><br>
+                                <small class="text-muted">Raised: {{ project.current_amount }} EGP</small>
+                            </p>
+                            <p class="card-text">
+                                <small class="text-muted">Started: {{ project.start_time|date:"F d, Y" }}</small><br>
+                                <small class="text-muted">Ends: {{ project.end_time|date:"F d, Y" }}</small>
+                            </p>
+                        </div>
+                        <div class="card-footer">
+                            <div class="btn-group w-100">
+                                <a href="{% url 'project_detail' project.id %}" class="btn btn-primary">View</a>
+                                <a href="{% url 'update_project' project.id %}" class="btn btn-secondary">Edit</a>
+                                {% if project.can_be_cancelled %}
+                                <a href="{% url 'cancel_project' project.id %}" class="btn btn-danger">Cancel</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info text-center">
+            <h4>You haven't created any projects yet.</h4>
+            <p>Start your first fundraising campaign now!</p>
+            <a href="{% url 'create_project' %}" class="btn btn-primary">Create New Project</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

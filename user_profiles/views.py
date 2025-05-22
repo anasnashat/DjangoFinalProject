@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.views.generic import DetailView, UpdateView, DeleteView
+from django.views.generic import DetailView, UpdateView, DeleteView, ListView
 from django.urls import reverse_lazy
 from projects.models import Profile
 from projects.forms import ProjectForm
@@ -24,3 +24,10 @@ class UserProfileUpdateView(UpdateView):
 
 class UserProfileDeleteView(DeleteView):
 	pass
+
+class UserProjectsListView(LoginRequiredMixin, ListView):
+    pass
+
+
+class UserDonationsListView(LoginRequiredMixin, ListView):
+    pass
