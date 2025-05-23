@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
-from projects.models import Profile
+from user_profiles.models import Profile
 
 class ProfileUpdateForm(forms.ModelForm):
     first_name = forms.CharField(max_length=100)

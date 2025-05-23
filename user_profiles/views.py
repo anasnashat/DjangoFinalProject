@@ -1,8 +1,10 @@
 from django.shortcuts import render, redirect
 from django.views.generic import DetailView, UpdateView, DeleteView, ListView
 from django.urls import reverse_lazy
-from projects.models import Profile, Project, Donation
-from projects.forms import ProfileUpdateForm
+from projects.models import Project
+from donations.models import Donation
+from user_profiles.models import Profile
+from user_profiles.forms import ProfileUpdateForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.contrib import messages
@@ -11,7 +13,7 @@ from django.http import HttpResponseRedirect
 
 class UserProfileShowView(LoginRequiredMixin, DetailView):
     model = Profile
-    template_name = 'projects/profile.html'
+    template_name = 'profiles/profile.html'
     context_object_name = 'profile'
     
     def get_object(self):
@@ -26,7 +28,7 @@ class UserProfileShowView(LoginRequiredMixin, DetailView):
 class UserProfileUpdateView(LoginRequiredMixin, UpdateView):
     model = Profile
     form_class = ProfileUpdateForm
-    template_name = 'projects/update_profile.html'
+    template_name = 'profiles/update_profile.html'
     success_url = reverse_lazy('profile')
     
     def get_object(self):
@@ -38,7 +40,7 @@ class UserProfileUpdateView(LoginRequiredMixin, UpdateView):
 
 class UserProfileDeleteView(LoginRequiredMixin, DeleteView):
     model = User
-    template_name = 'projects/delete_profile.html'
+    template_name = 'profiles/delete_profile.html'
     success_url = reverse_lazy('home')
     
     def get_object(self):
@@ -57,7 +59,7 @@ class UserProfileDeleteView(LoginRequiredMixin, DeleteView):
 
 class UserProjectsListView(LoginRequiredMixin, ListView):
     model = Project
-    template_name = 'projects/user_projects.html'
+    template_name = 'profiles/user_projects.html'
     context_object_name = 'projects'
     paginate_by = 10
     
@@ -66,7 +68,7 @@ class UserProjectsListView(LoginRequiredMixin, ListView):
 
 class UserDonationsListView(LoginRequiredMixin, ListView):
     model = Donation
-    template_name = 'projects/user_donations.html'
+    template_name = 'profiles/user_donations.html'
     context_object_name = 'donations'
     paginate_by = 10
     
