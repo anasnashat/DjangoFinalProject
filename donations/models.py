@@ -8,7 +8,7 @@ class Donation(models.Model):
         ('completed', 'Completed'),
         ('failed', 'Failed'),
     ], default='pending')
-    transaction_id = models.CharField(max_length=255, blank=True, null=True)
+    payment_id = models.ForeignKey('payments.Payment', on_delete=models.CASCADE, null=True, blank=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
 

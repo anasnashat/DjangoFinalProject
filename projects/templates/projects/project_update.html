@@ -1,0 +1,142 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+
+{% block title %}Update {{ project.title }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header">
+                    <h2>Update Project</h2>
+                </div>
+                <div class="card-body">
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+
+                        <div class="form-group mb-3">
+                            <label for="{{ form.title.id_for_label }}">Title</label>
+                            {{ form.title|add_class:"form-control" }}
+                            {% if form.title.errors %}
+                                <div class="text-danger">
+                                    {{ form.title.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label for="{{ form.image.id_for_label }}">Image</label>
+                            {% if project.image %}
+                                <div class="mb-2">
+                                    <img src="{{ project.image.url }}" alt="{{ project.title }}" class="img-thumbnail" style="max-height: 200px">
+                                </div>
+                            {% endif %}
+                            {{ form.image|add_class:"form-control" }}
+                            {% if form.image.errors %}
+                                <div class="text-danger">
+                                    {{ form.image.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label for="{{ form.details.id_for_label }}">Details</label>
+                            {{ form.details|add_class:"form-control" }}
+                            {% if form.details.errors %}
+                                <div class="text-danger">
+                                    {{ form.details.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label for="{{ form.total_target.id_for_label }}">Total Target</label>
+                            {{ form.total_target|add_class:"form-control" }}
+                            {% if form.total_target.errors %}
+                                <div class="text-danger">
+                                    {{ form.total_target.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label for="{{ form.starting_date.id_for_label }}">Starting Date</label>
+                                    {{ form.starting_date }}
+                                    {% if form.starting_date.errors %}
+                                        <div class="text-danger">
+                                            {{ form.starting_date.errors }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group mb-3">
+                                    <label for="{{ form.ending_date.id_for_label }}">Ending Date</label>
+                                    {{ form.ending_date }}
+                                    {% if form.ending_date.errors %}
+                                        <div class="text-danger">
+                                            {{ form.ending_date.errors }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label for="{{ form.category.id_for_label }}">Category</label>
+                            {{ form.category|add_class:"form-control" }}
+                            {% if form.category.errors %}
+                                <div class="text-danger">
+                                    {{ form.category.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label for="{{ form.tags.id_for_label }}">Tags</label>
+                            {{ form.tags|add_class:"form-control" }}
+                            {% if form.tags.errors %}
+                                <div class="text-danger">
+                                    {{ form.tags.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="form-check mb-3">
+                            {{ form.is_active|add_class:"form-check-input" }}
+                            <label class="form-check-label" for="{{ form.is_active.id_for_label }}">
+                                Active
+                            </label>
+                            {% if form.is_active.errors %}
+                                <div class="text-danger">
+                                    {{ form.is_active.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="form-check mb-3">
+                            {{ form.is_featured|add_class:"form-check-input" }}
+                            <label class="form-check-label" for="{{ form.is_featured.id_for_label }}">
+                                Featured
+                            </label>
+                            {% if form.is_featured.errors %}
+                                <div class="text-danger">
+                                    {{ form.is_featured.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-4">
+                            <a href="{% url 'project-detail' project.slug %}" class="btn btn-secondary">Cancel</a>
+                            <button type="submit" class="btn btn-primary">Update Project</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
