@@ -46,7 +46,7 @@ def register_view(request):
 
             send_mail(subject, '', 'admin@crowdfund.com', [user.email], html_message=message)
 
-            return render(request, "users/activation_sent_mail.html")
+            return render(request, "users/activation_redirection.html")
 
     else:
         form = RegisterForm()
