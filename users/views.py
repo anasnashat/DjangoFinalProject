@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout
 from django.contrib import messages
 from django.core.mail import send_mail
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model,logout
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
 from django.template.loader import render_to_string
@@ -87,6 +87,9 @@ def login_view(request):
 def home(request):
     return render(request, 'users/home.html')
 
-
+@login_required
+def logout_view(request):
+    logout(request)
+    return redirect('homepage')  # or any page you want after logout
 
 
