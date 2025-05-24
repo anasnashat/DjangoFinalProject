@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Reply{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-primary text-white rounded-top">
+                    <h4 class="mb-0 d-flex align-items-center">
+                        <i class="fas fa-edit me-2"></i> Edit Reply
+                    </h4>
+                </div>
+                <div class="card-body p-4">
+                    <!-- Project and Comment Info -->
+                    <div class="alert alert-info rounded-3 d-flex flex-column gap-2">
+                        <h6 class="mb-0">
+                            <i class="fas fa-project-diagram me-2"></i> 
+                            Project: {{ project.title }}
+                        </h6>
+                        <p class="mb-0 small">
+                            Replying to comment by: {{ comment.user.get_full_name|default:comment.user.username }}
+                        </p>
+                        <small class="text-muted">{{ comment.content|truncatewords:15 }}</small>
+                    </div>
+                    
+                    <!-- Edit Form -->
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mb-4">
+                            <label for="id_replay" class="form-label fw-bold">Your Reply:</label>
+                            <textarea name="replay" id="id_replay" class="form-control rounded-3" rows="5" required>{{ form.replay.value|default_if_none:'' }}</textarea>
+                            {% if form.replay.errors %}
+                                <div class="invalid-feedback d-block mt-1">
+                                    {% for error in form.replay.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="d-flex justify-content-end gap-2">
+                            <a href="{% url 'project-detail' slug=project.slug %}" class="btn btn-outline-secondary rounded-pill px-4">
+                                <i class="fas fa-times me-2"></i> Cancel
+                            </a>
+                            <button type="submit" class="btn btn-primary rounded-pill px-4">
+                                <i class="fas fa-save me-2"></i> Update Reply
+                            </button>
+                        </div>
+                    </form>
+                    
+                    <!-- Original Reply Info -->
+                    <div class="mt-4 pt-4 border-top">
+                        <h6 class="text-muted mb-3 fw-bold">Original Reply:</h6>
+                        <div class="bg-light p-3 rounded-3 shadow-sm">
+                            <p class="mb-2 text-dark">{{ reply.replay|linebreaks }}</p>
+                            <small class="text-muted">
+                                Posted {{ reply.created_at|timesince }} ago
+                                {% if reply.updated_at != reply.created_at %}
+                                    • Last edited {{ reply.updated_at|timesince }} ago
+                                {% endif %}
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.card {
+    transition: transform 0.2s ease-in-out;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+}
+
+.btn {
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    transform: scale(1.05);
+}
+
+.alert-info {
+    background-color: #e7f1ff;
+    border-color: #d3e2ff;
+}
+
+.form-control:focus {
+    border-color: #0057cc;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+@media (max-width: 576px) {
+    .card-body {
+        padding: 1.5rem;
+    }
+    
+    .btn {
+        padding: 0.5rem 1rem;
+    }
+}
+
+/* Custom animations for smoother transitions */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.card {
+    animation: fadeIn 0.3s ease-in-out;
+}
+</style>
+{% endblock %}
