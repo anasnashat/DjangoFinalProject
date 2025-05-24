@@ -25,7 +25,7 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="{{ form.first_name.id_for_label }}">First Name</label>
-                                    {{ form.first_name|add_class:"form-control" }}
+                                    {{ form.first_name }}
                                     {% if form.first_name.errors %}
                                         <div class="text-danger">
                                             {{ form.first_name.errors }}
@@ -37,7 +37,7 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="{{ form.last_name.id_for_label }}">Last Name</label>
-                                    {{ form.last_name|add_class:"form-control" }}
+                                    {{ form.last_name }}
                                     {% if form.last_name.errors %}
                                         <div class="text-danger">
                                             {{ form.last_name.errors }}
@@ -54,7 +54,7 @@
                                     <img src="{{ profile.image.url }}" alt="Profile Image" class="img-thumbnail" style="max-width: 150px;">
                                 </div>
                             {% endif %}
-                            {{ form.image|add_class:"form-control-file" }}
+                            {{ form.image }}
                             {% if form.image.errors %}
                                 <div class="text-danger">
                                     {{ form.image.errors }}
@@ -66,7 +66,7 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="{{ form.country.id_for_label }}">country</label>
-                                    {{ form.country|add_class:"form-control" }}
+                                    {{ form.country }}
                                     {% if form.country.errors %}
                                         <div class="text-danger">
                                             {{ form.country.errors }}
@@ -78,7 +78,7 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="{{ form.phone_number.id_for_label }}">phone number</label>
-                                    {{ form.phone_number|add_class:"form-control" }}
+                                    {{ form.phone_number }}
                                     {% if form.phone_number.errors %}
                                         <div class="text-danger">
                                             {{ form.phone_number.errors }}
@@ -90,7 +90,7 @@
                         
                         <div class="form-group">
                             <label for="{{ form.address.id_for_label }}">Address</label>
-                            {{ form.address|add_class:"form-control" }}
+                            {{ form.address }}
                             {% if form.address.errors %}
                                 <div class="text-danger">
                                     {{ form.address.errors }}
@@ -102,7 +102,7 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="{{ form.birthdate.id_for_label }}">Birthdate</label>
-                                    {{ form.birthdate|add_class:"form-control" }}
+                                    {{ form.birthdate }}
                                     {% if form.birthdate.errors %}
                                         <div class="text-danger">
                                             {{ form.birthdate.errors }}
@@ -114,7 +114,7 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="{{ form.gender.id_for_label }}">Gender</label>
-                                    {{ form.gender|add_class:"form-control" }}
+                                    {{ form.gender }}
                                     {% if form.gender.errors %}
                                         <div class="text-danger">
                                             {{ form.gender.errors }}
