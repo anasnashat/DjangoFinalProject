@@ -89,7 +89,11 @@
             {% endif %}
             <div class="card-body">
               <h5 class="card-title">{{ p.title }}</h5>
+              {% if p.details %}
               <p class="card-text">{{ p.details|truncatewords:20 }}</p>
+              {% else %}
+              <p class="card-text">this needs your donation</p>
+              {% endif %}
               <p class="text-muted mb-3">Target: ${{ p.total_target }}</p>
             </div>
              <div class="mt-auto">

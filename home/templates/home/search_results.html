@@ -4,9 +4,6 @@
 
 {% block styles %}
 <style>
-  /* Green theme overrides */
-
-  /* Titles and headings */
   h3.text-primary {
     color: #16a34a; /* green-700 */
   }
@@ -39,6 +36,14 @@
   /* Muted text for no results */
   p.text-muted {
     color: #166534; /* green-800 */
+  }
+  .no-projects-alert {
+    background-color: #d1fae5;
+    color: #065f46;
+    border: 1px solid #22c55e;
+    border-radius: 8px;
+    padding: 1rem;
+    font-weight: 600;
   }
 </style>
 {% endblock %}
@@ -83,7 +88,9 @@
             {% endfor %}
         </div>
     {% else %}
-        <p class="text-muted">No projects matched your search.</p>
+        <div class="no-projects-alert" role="alert">
+      No projects in this category.
+      </div>
     {% endif %}
 </div>
 {% endblock %}

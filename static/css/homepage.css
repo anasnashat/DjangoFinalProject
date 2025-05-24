@@ -124,6 +124,9 @@ section.py-5 h2 {
   box-shadow: 0 12px 20px rgba(34, 197, 94, 0.25); /* green shadow */
 }
 
+.featured-swiper .card .top-image{
+  height: 200px;
+}
 /* Testimonials */
 section.bg-dark blockquote {
   font-style: italic;
