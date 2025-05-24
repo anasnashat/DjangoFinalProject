@@ -30,6 +30,7 @@ urlpatterns = [
     path('payments/', include('payments.urls')),
     path('donations/', include('donations.urls',namespace='donations')),
     path('profiles/', include('user_profiles.urls')),
+    path('users/', include('users.urls'))
 ]
 
 
