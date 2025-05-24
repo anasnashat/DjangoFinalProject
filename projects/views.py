@@ -5,6 +5,7 @@ from projects.forms import ProjectForm
 from django.forms import modelformset_factory
 from .forms import ProjectForm, ProjectImageFormSet
 from projects.models import ProjectImage
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 class ProjectListView(ListView):
     model = Project
@@ -14,7 +15,7 @@ class ProjectListView(ListView):
     paginate_by = 10
 
 
-class ProjectCreateView(CreateView):
+class ProjectCreateView(LoginRequiredMixin, CreateView):
     model = Project
     template_name = 'projects/project_create.html'
     form_class = ProjectForm
@@ -27,18 +28,20 @@ class ProjectCreateView(CreateView):
         else:
             data['images'] = ProjectImageFormSet(queryset=ProjectImage.objects.none())
         return data
-def form_valid(self, form):
-    context = self.get_context_data()
-    images = context['images']
-    form.instance.created_by = self.request.user
-    
-    if images.is_valid():
-        self.object = form.save()
-        images.instance = self.object
-        images.save()
+
+    def form_valid(self, form):
+        context = self.get_context_data()
+        images = context['images']
+        
+        project = form.save(commit=False)
+        project.created_by = self.request.user
+        project.save()
+        
+        if images.is_valid():
+            images.instance = project
+            images.save()
+        
         return super().form_valid(form)
-    else:
-        return self.form_invalid(form)
 
 
 class ProjectDetailView(DetailView):

@@ -16,6 +16,7 @@ class ProjectForm(forms.ModelForm):
         model = Project
         fields = ['title', 'details', 'total_target', 'starting_date', 
                   'ending_date', 'is_active', 'category', 'tags', 'is_featured']
+        exclude = ['created_by']  
         widgets = {
             'details': forms.Textarea(attrs={'rows': 4}),
         }
@@ -24,9 +25,10 @@ class ProjectForm(forms.ModelForm):
         cleaned_data = super().clean()
         starting_date = cleaned_data.get('starting_date')
         ending_date = cleaned_data.get('ending_date')
-        
+                
         if starting_date and ending_date and ending_date < starting_date:
             raise ValidationError("Ending date cannot be before the starting date.")
+        return cleaned_data
 
 class ProjectImageForm(forms.ModelForm):
     class Meta:
