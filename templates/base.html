@@ -7,13 +7,15 @@
     <title>{% block title %}Donation Project{% endblock %}</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css" />
     <link rel="stylesheet" href="{% static 'css/project_detail.css' %}">
+    <link rel="stylesheet" href="{% static 'css/homepage.css' %}">
     <!-- Custom CSS -->
     {% block styles %}{% endblock %}
 </head>
 <body>
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
             <a class="navbar-brand" href="{% url 'homepage' %}">Donation Platform</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -52,7 +54,9 @@
     </nav>
 
     <!-- Main Content -->
-    <div class="container">
+      {% block container_start %}
+        <div class="container">
+    {% endblock %}
         {% if messages %}
             {% for message in messages %}
                 <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">

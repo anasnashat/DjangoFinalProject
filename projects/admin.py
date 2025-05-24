@@ -14,4 +14,4 @@ class ProjectAdmin(admin.ModelAdmin):
     filter_horizontal = ('tags',)
     prepopulated_fields = {'slug': ('title',)}
     inlines = [ProjectImageInline]
-
+    

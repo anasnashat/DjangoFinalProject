@@ -1,0 +1,168 @@
+/* Make sure the carousel is relative so buttons can be absolutely placed */
+.carousel {
+  position: relative;
+}
+
+/* Customize previous button */
+.carousel-control-prev,
+.carousel-control-next {
+  width: 60px;
+  height: 60px;
+  background-color: rgba(0, 49, 23, 0.6); /* changed to dark green */
+  border-radius: 50%;
+  top: 50%;
+  transform: translateY(-50%);
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+}
+
+.carousel-control-prev {
+  left: 20px;
+}
+
+.carousel-control-next {
+  right: 20px;
+}
+
+/* Arrow icon customization */
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+  background-image: none !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+  width: 100%;
+  height: 100%;
+}
+
+/* Arrow content using CSS */
+.carousel-control-prev-icon::before {
+  content: "‹";
+  color: white;
+  font-size: 40px;
+}
+
+.carousel-control-next-icon::before {
+  content: "›";
+  color: white;
+  font-size: 40px;
+}
+
+/* Hero Section customization */
+section.bg-dark {
+  background: linear-gradient(135deg, #2d8f7c7c, #1b3b26);
+  color: #e0ffe7;
+  padding: 100px 0 100px;
+}
+
+section.bg-dark h1 {
+  font-weight: 700;
+  letter-spacing: 1.5px;
+}
+
+section.bg-dark p.lead {
+  font-size: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+section.bg-dark form input.form-control {
+  border-radius: 50px;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  background-color: #1b3b26;
+}
+
+section.bg-dark form input.form-control::placeholder {
+  color: #94b894;
+}
+
+section.bg-dark form button {
+  border-radius: 50px;
+  padding: 0.75rem 2rem;
+  background-color: #22c55e; /* green-500 */
+  border: none;
+  transition: background-color 0.3s ease;
+}
+
+section.bg-dark form button.btn-primary:hover {
+  background-color: #16a34a; /* green-600 */
+}
+
+/* How It Works Icons */
+section.py-5 .row div.col-md-4 img {
+  filter: drop-shadow(1px 1px 2px rgba(27, 59, 38, 0.3));
+}
+
+section.py-5 h2 {
+  font-weight: 600;
+  color: #166534; /* green-800 */
+}
+
+/* Carousel cards */
+.carousel-inner .card {
+  border-radius: 15px;
+  box-shadow: 0 4px 10px rgba(27, 59, 38, 0.1);
+}
+
+.carousel-inner img.card-img-top {
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
+  height: 200px;
+  object-fit: cover;
+}
+
+/* Featured projects cards */
+.swiper-slide .card {
+  border-radius: 12px;
+  border: none;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.swiper-slide .card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 12px 20px rgba(34, 197, 94, 0.25); /* green shadow */
+}
+
+/* Testimonials */
+section.bg-dark blockquote {
+  font-style: italic;
+  font-size: 1.1rem;
+  border-left: 5px solid #22c55e; /* green-500 */
+  padding-left: 1rem;
+}
+
+section.bg-dark footer.blockquote-footer {
+  font-size: 0.9rem;
+  color: #86efac; /* lighter green */
+}
+
+/* Categories list */
+.category-card {
+  border: 1px solid #22c55e; /* green border */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.category-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 0.5rem 1rem rgba(34, 197, 94, 0.3); /* green shadow */
+  cursor: pointer;
+}
+.how-title {
+  font-weight: 600;
+  color: #166534; /* green-800 */
+  text-align: center;
+  margin-bottom: 2rem;
+  font-size: 30px;
+}
+.shadowSection {
+  position: relative; /* for z-index if needed */
+  padding: 6rem 1rem;
+  box-shadow: 0 -5px 7px -4px rgba(22, 163, 74, 0.5);
+  z-index: 1;
+  transition: box-shadow 0.3s ease;
+}
+
+
