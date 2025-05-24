@@ -77,7 +77,7 @@ def login_view(request):
         if form.is_valid():
             user = form.get_user()
             login(request, user)
-            return redirect('home')
+            return redirect('homepage')
     else:
         form = LoginForm()
     return render(request, "users/login.html", {"form": form})
@@ -85,11 +85,11 @@ def login_view(request):
 # redirect after login
 @login_required
 def home(request):
-    return render(request, 'users/home.html')
+    return redirect('homepage')  
 
 @login_required
 def logout_view(request):
     logout(request)
-    return redirect('homepage')  # or any page you want after logout
+    return redirect('homepage')  
 
 

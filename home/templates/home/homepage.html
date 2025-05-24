@@ -6,7 +6,7 @@
 {% block content %}
 
 <!-- Hero Section -->
-<section class="hero bg-dark text-white text-center ">
+<section class="hero bg-dark text-white text-center">
   <div>
     <h1 class="display-4">Support a Cause. Change a Life.</h1>
     <p class="lead">Join millions who are making an impact. Start your journey today.</p>
@@ -44,18 +44,18 @@
 <!-- Top Rated Projects -->
 <section class="bg-light shadowSection">
   <div class="container">
-    <h2 class="mb-3">Top Rated Projects</h2>
+    <h2 class="mb-4 text-success">Top Rated Topics</h2>
     <div id="topProjectsCarousel" class="carousel slide" data-bs-ride="carousel">
       <div class="carousel-inner border-0">
         {% for p in top_projects %}
         <div class="carousel-item {% if forloop.first %}active{% endif %}">
-          <div class="card mx-auto border-0" style="width: 100%;">
-            {% if p.image %}
-            <img src="{{ p.image.url }}" class="card-img-top w-100" alt="{{ p.title }}">
+          <div class="card mx-auto border-0 h-100" style="width: 100%;">
+            {% if p.images.all %}
+            <img src="{{ p.images.all.0.image.url }}" class="top-image card-img w-100" alt="{{ p.title }}">
             {% else %}
-            <img src="{% static 'default.jpg' %}" class="card-img-top" alt="{{ p.title }}">
+            <img src="{% static 'default.jpg' %}" class="card-img-top">
             {% endif %}
-            <div class="card-body text-center">
+            <div class="card-body text-center position-absolute ">
               <h5 class="card-title">{{ p.title }}</h5>
               <p class="card-text">Average Rating: {{ p.avg_rating|default:"0.0" }}</p>
             </div>
@@ -78,23 +78,22 @@
 <!-- Featured Projects -->
 <section class=" shadowSection">
   <div class="container">
-    <h2 class="mb-4 text-success">Featured Projects</h2>
+    <h2 class="mb-4 text-success">Featured Topics</h2>
     <div class="swiper featured-swiper">
       <div class="swiper-wrapper">
         {% for p in featured_projects %}
         <div class="swiper-slide">
-          <div class="card mb-3 shadow-sm">
+          <div class="card p-3 mb-3 shadow-sm">
+            {% if p.images.all %}
+            <img src="{{ p.images.all.0.image.url }}" class="top-image card-img w-100" alt="{{ p.title }}">
+            {% endif %}
             <div class="card-body">
               <h5 class="card-title">{{ p.title }}</h5>
               <p class="card-text">{{ p.details|truncatewords:20 }}</p>
-              <p class="text-muted mb-2">Target: ${{ p.total_target }}</p>
+              <p class="text-muted mb-3">Target: ${{ p.total_target }}</p>
             </div>
              <div class="mt-auto">
-                {% if p.slug %}
-                    <a href="{% url 'project-detail' p.slug %}" class="btn btn-sucsess w-100">View Details</a>
-                {% else %}
-                    <button class="btn btn-secondary w-100" disabled>View Details</button>
-                {% endif %}
+                    <a href="{% url 'project-detail' p.slug %}" class="btn btn-success p-2 w-100">View Details</a>
             </div>
           </div>
         </div>
@@ -114,22 +113,22 @@
     <div class="row">
       <div class="col-md-4">
         <blockquote class="blockquote">“This platform made it easy to support people I care about. Incredible experience!”</blockquote>
-        <footer class="blockquote-footer text-white-50">Amina R.</footer>
+        <footer class="blockquote-footer text-white-50" style="background-color: #0f3323;">Amina R.</footer>
       </div>
       <div class="col-md-4">
         <blockquote class="blockquote">“I felt secure giving my donation. Very smooth and trustworthy site.”</blockquote>
-        <footer class="blockquote-footer text-white-50">Mohamed T.</footer>
+        <footer class="blockquote-footer text-white-50 " style="background-color: #0f3323;">Mohamed T.</footer>
       </div>
       <div class="col-md-4">
         <blockquote class="blockquote">“So many touching stories. I was moved to help and it was easy to do.”</blockquote>
-        <footer class="blockquote-footer text-white-50">Lina S.</footer>
+        <footer class="blockquote-footer text-white-50 " style="background-color: #0f3323;">Lina S.</footer>
       </div>
     </div>
   </div>
 </section>
 
 <!-- Categories -->
-<section class="py-5 bg-light">
+<section class="py-5">
   <div class="container">
     <h2 class="text-sucsess mb-4">Browse by Category</h2>
     <div class="row g-3">
