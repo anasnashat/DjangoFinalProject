@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block title %}Search Results{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2 class="text-primary mb-4">🔍 Search Results</h2>
+
+    {% if search_results %}
+        <div class="row">
+            {% for p in search_results %}
+                <div class="col-md-4">
+                    <div class="card mb-3 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ p.title }}</h5>
+                            <p class="card-text">Created: {{ p.created_at|date:"Y-m-d" }}</p>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="text-muted">No projects matched your search.</p>
+    {% endif %}
+</div>
+{% endblock %}

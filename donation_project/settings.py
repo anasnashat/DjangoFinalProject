@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'tags',
     'comments',
     'payments',
+    'home'
 
 
 

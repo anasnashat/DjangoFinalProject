@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+{% load static %} 
+{% block title %}Projects{% endblock %}
+
+{% block content %}
+   <div class="container">
+        <!-- 🔍 Search -->
+        <form action="{% url 'search_results' %}" method="get" class="d-flex justify-content-center mb-5">
+            <input type="text" name="q" class="form-control w-50 me-2" placeholder="Search projects by title or tag...">
+            <button type="submit" class="btn btn-outline-primary">Search</button>
+        </form>
+
+       
+
+        <div class="mb-5">
+  <h2 class="text-success"> Top Rated Projects</h2>
+
+  <div id="topProjectsCarousel" class="carousel slide" data-bs-ride="carousel">
+    <!-- Indicators -->
+    <div class="carousel-indicators">
+      {% for p in top_projects %}
+        <button type="button" data-bs-target="#topProjectsCarousel" data-bs-slide-to="{{ forloop.counter0 }}"
+          {% if forloop.first %}class="active" aria-current="true"{% endif %}
+          aria-label="Slide {{ forloop.counter }}">
+        </button>
+      {% endfor %}
+    </div>
+
+    <!-- Slides -->
+    <div class="carousel-inner">
+      {% for p in top_projects %}
+        <div class="carousel-item {% if forloop.first %}active{% endif %}">
+          <div class="card mx-auto" style="width: 100%;">
+            {% if p.image %}
+              <img src="{{ p.image.url }}" class="card-img-top" alt="{{ p.title }}">
+            {% else %}
+              <img src="{% static 'default.jpg' %}" class="card-img-top" alt="{{ p.title }}">
+            {% endif %}
+            <div class="card-body text-center">
+              <h5 class="card-title">{{ p.title }}</h5>
+              <p class="card-text">Average Rating: {{ p.avg_rating|default:"0.0" }}</p>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+
+    <!-- Controls -->
+    <button class="carousel-control-prev" type="button" data-bs-target="#topProjectsCarousel" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#topProjectsCarousel" data-bs-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Next</span>
+    </button>
+  </div>
+</div>
+
+ <!-- 🌟 Featured Projects -->
+        <div class="mb-5">
+            <h2 class="text-warning">🌟 Featured Projects</h2>
+            <div class="row">
+                {% for p in featured_projects %}
+                    <div class="col-md-4">
+                        <div class="card mb-3 shadow-sm border-warning">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ p.title }}</h5>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        
+        <!-- 🕓 Latest Projects -->
+        <div class="mb-5">
+            <h2 class="text-info">🕓 Latest Projects</h2>
+            <div class="row">
+                {% for p in latest_projects %}
+                    <div class="col-md-4">
+                        <div class="card mb-3 shadow-sm">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ p.title }}</h5>
+                                <p class="card-text">Created: {{ p.created_at|date:"Y-m-d" }}</p>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- 📂 Categories -->
+        <div class="mb-5">
+            <h2 class="text-secondary">📂 Categories</h2>
+            <ul class="list-group list-group-flush">
+                {% for cat in categories %}
+                    <li class="list-group-item">
+                        <a href="{% url 'category_projects' cat.id %}" class="text-decoration-none">{{ cat.name }}</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+</div>
+
+
+{% endblock %}
+
+ 
+        <!-- 🔧 Admin Shortcut
+        {% if request.user.is_staff %}
+        <div class="mb-5">
+            <h2 class="text-muted">🔧 Admin Panel</h2>
+            <a href="/admin/" class="btn btn-outline-dark">Go to Admin</a>
+        </div>
+        {% endif %}
+    </div> -->
