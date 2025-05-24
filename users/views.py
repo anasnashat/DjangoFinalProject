@@ -24,9 +24,11 @@ def register_view(request):
             user = form.save(commit=False)
             user.is_active = False  # Require activation
             username = form.cleaned_data.get('username')
+
             if User.objects.filter(username=username).exists():
-                messages.error(request, "This user name exists olease aplly a different one")
+                messages.error(request, "This username already exists. Please choose a different one.")
                 return render(request, "users/register.html", {"form": form})
+
             user.save()
 
             # Sending Activation Email
@@ -35,13 +37,22 @@ def register_view(request):
             domain = get_current_site(request).domain
             protocol = 'https' if request.is_secure() else 'http'
             link = f"{protocol}://{domain}/users/activate/{uid}/{token}/"
+
             subject = "Activate your account"
-            message = f"Click the link to activate your account:\n{link}"
-            send_mail(subject, message, 'admin@crowdfund.com', [user.email])
-            return HttpResponse("Check your email to activate your account.")
+            message = render_to_string("users/activation_sent_mail.html", {
+                "user": user,
+                "link": link,
+            })
+
+            send_mail(subject, '', 'admin@crowdfund.com', [user.email], html_message=message)
+
+            return render(request, "users/activation_sent_mail.html")
+
     else:
         form = RegisterForm()
+
     return render(request, "users/register.html", {"form": form})
+
 
 # Account Activation View
 def activate_account(request, uidb64, token):
@@ -54,9 +65,10 @@ def activate_account(request, uidb64, token):
     if user is not None and token_generator.check_token(user, token):
         user.is_active = True
         user.save()
-        return HttpResponse("Account activated successfully!")
+        return render(request, "users/activation_success.html")
     else:
         return HttpResponse("Activation link is invalid!")
+
 
 # Login View
 def login_view(request):
