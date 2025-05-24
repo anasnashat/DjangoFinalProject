@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.admin',
     'widget_tweaks',
     'django.contrib.humanize',
+    'users',
     'user_profiles',
     'categories',
     'donations',
@@ -142,6 +143,16 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'donation_project.settings')
 
 
+#EMAIL
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'monicaamgd57@gmail.com' 
+EMAIL_HOST_PASSWORD = 'fqgv lucl csid xzyq'  
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+
 # Stripe Settings
 STRIPE_PUBLIC_KEY = 'pk_test_51Lq8c2FnT18gA9slYNqstpTETVber94FCUaRrek94UbEXl0gIsOJWgyPc4F1oXA0iLjaLYU8tcGsTyGz3IseF79I00Z2CTTlyw'
 STRIPE_SECRET_KEY = 'sk_test_51Lq8c2FnT18gA9slibA60HH07pyw80saD8kha7LlQSSbjUw2AVMCYJf8DWLvU8rmoRCmbTFQ9AmiWiRx4jky7ZgC00LXCHooME'
@@ -150,3 +161,7 @@ STRIPE_SECRET_KEY = 'sk_test_51Lq8c2FnT18gA9slibA60HH07pyw80saD8kha7LlQSSbjUw2AV
 # Media files configuration
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+# Authentication URLs
+LOGIN_URL = '/users/login/'
+LOGIN_REDIRECT_URL = '/users/home/'
