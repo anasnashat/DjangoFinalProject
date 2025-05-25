@@ -8,7 +8,7 @@ class ProfileUpdateForm(forms.ModelForm):
     
     class Meta:
         model = Profile
-        fields = ['image', 'country', 'phone_number', 'address', 'birthdate', 'gender'] # can add facebook_profile -bonus-
+        fields = ['image', 'country', 'phone_number', 'address', 'birthdate', 'gender']
         widgets = {
             'birthdate': forms.DateInput(attrs={'type': 'date'}),
         }
