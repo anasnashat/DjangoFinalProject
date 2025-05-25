@@ -24,6 +24,7 @@ def temporary_login_view(request):
     return HttpResponse("Login page placeholder")
 
 urlpatterns = [
+    path('',include('home.urls')),
     path('login/', temporary_login_view, name='login'),
     path('admin/', admin.site.urls),
     path('projects/', include('projects.urls')),
@@ -35,6 +36,9 @@ urlpatterns = [
     path('comments/', include('comments.urls')),
     path('replies/', include('replays.urls')),
     path('ratings/', include('ratings.urls')),
+    path('accounts/', include('allauth.urls')),
+    path('users/', include('users.urls'))
+
 ]
 
 

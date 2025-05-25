@@ -2,129 +2,764 @@
 {% load static %}
 
 {% block content %}
-<div class="container mt-5">
-    <div class="row">
-        <div class="col-md-4">
-            <div class="card">
-                <div class="card-header bg-primary text-white">
-                    <h3 class="text-center">Profile</h3>
-                </div>
-                <div class="card-body text-center">
-                    <img src="{{ profile.image.url }}" alt="Profile Picture" class="rounded-circle img-fluid mb-3" style="max-width: 150px;">
-                    <h4>{{ user.first_name }} {{ user.last_name }}</h4>
-                    <p class="text-muted">{{ user.email }}</p>
-                    
-                    <div class="mt-3">
-                        <a href="{% url 'update_profile' %}" class="btn btn-primary">Update Profile</a>
-                        <a href="{% url 'delete_profile' %}" class="btn btn-danger">Delete Profile</a>
+<!-- Hero Section with Profile -->
+<div class="hero-section">
+    <div class="container py-5">
+        <div class="row align-items-center">
+            <div class="col-lg-8 mx-auto text-center">
+                <div class="profile-header">
+                    <div class="profile-image-container mb-4">
+                        <img src="{{ profile.image.url }}" alt="Profile Picture" 
+                            class="profile-image">
+                        <div class="profile-status-indicator"></div>
                     </div>
-                </div>
-            </div>
-            
-            <div class="card mt-3">
-                <div class="card-header bg-info text-white">
-                    <h5>Additional Information</h5>
-                </div>
-                <div class="card-body">
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item"><strong>country</strong> {{ profile.country|default:"Not Found" }}</li>
-                        <li class="list-group-item"><strong>phone number</strong> {{ profile.phone_number|default:"Not Found" }}</li>
-                        <li class="list-group-item"><strong>Address</strong> {{ profile.address|default:"Not Found" }}</li>
-                        <li class="list-group-item"><strong>birthdate</strong> {{ profile.birthdate|date:"Y-m-d"|default:"Not Found" }}</li>
-                        <li class="list-group-item"><strong>Gender</strong> 
-                            {% if profile.gender == 'M' %}
-                                Male
-                            {% elif profile.gender == 'F' %}
-                                Female
-                            {% endif %}
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-        
-        <div class="col-md-8">
-            <ul class="nav nav-tabs" id="profileTabs" role="tablist">
-                <li class="nav-item">
-                    <a class="nav-link active" id="projects-tab" data-toggle="tab" href="#projects" role="tab">Projects</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" id="donations-tab" data-toggle="tab" href="#donations" role="tab">Donations</a>
-                </li>
-            </ul>
-            
-            <div class="tab-content mt-3" id="profileTabsContent">
-                <div class="tab-pane fade show active" id="projects" role="tabpanel">
-                    <h4>My Projects<a href="{% url 'user_projects' %}" class="btn btn-sm btn-outline-primary float-right">Show All</a></h4>
-                    {% if projects %}
-                        <div class="row">
-                            {% for project in projects|slice:":3" %}
-                                <div class="col-md-4 mb-3">
-                                    <div class="card h-100">
-                                        {% if project.images.first %}
-                                            <img src="{{ project.images.first.image.url }}" class="card-img-top" alt="{{ project.title }}">
-                                        {% else %}
-                                            <img src="{% static 'img/default-project.jpg' %}" class="card-img-top" alt="Default Image">
-                                        {% endif %}
-                                        <div class="card-body">
-                                            <h5 class="card-title">{{ project.title }}</h5>
-                                            <div class="progress mb-2">
-                                                <div class="progress-bar" role="progressbar" style=`width: {{ project.progress_percentage }}%;` 
-                                                    aria-valuenow="{{ project.progress_percentage }}" aria-valuemin="0" aria-valuemax="100">
-                                                    {{ project.progress_percentage }}%
-                                                </div>
-                                            </div>
-                                            <p class="card-text">{{ project.amount_raised }} / {{ project.total_target }} Dollars</p>
-                                            <a href="{% url 'project_detail' project.slug %}" class="btn btn-sm btn-primary">Details</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            {% endfor %}
-                        </div>
-                    {% else %}
-                        <div class="alert alert-info">No projects found.</div>
-                    {% endif %}
-                </div>
-                
-                <div class="tab-pane fade" id="donations" role="tabpanel">
-                    <h4>My Donations<a href="{% url 'user_donations' %}" class="btn btn-sm btn-outline-primary float-right">Show All</a></h4>
-                    {% if donations %}
-                        <div class="table-responsive">
-                            <table class="table table-striped">
-                                <thead>
-                                    <tr>
-                                        <th>Project</th>
-                                        <th>Amount</th>
-                                        <th>Status</th>
-                                        <th>Date</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for donation in donations|slice:":5" %}
-                                        <tr>
-                                            <td><a href="{% url 'project_detail' donation.project.slug %}">{{ donation.project.title }}</a></td>
-                                            <td>{{ donation.amount }} Dollars</td>
-                                            <td>
-                                                {% if donation.payment_status == 'completed' %}
-                                                    <span class="badge badge-success">Completed</span>
-                                                {% elif donation.payment_status == 'pending' %}
-                                                    <span class="badge badge-warning">Pending</span>
-                                                {% else %}
-                                                    <span class="badge badge-danger">Failed</span>
-                                                {% endif %}
-                                            </td>
-                                            <td>{{ donation.created_at|date:"Y-m-d" }}</td>
-                                        </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
-                    {% else %}
-                        <div class="alert alert-info">No donations found.</div>
-                    {% endif %}
+                    <h1 class="display-5 fw-bold text-white mb-2">
+                        {{ user.first_name }} {{ user.last_name }}
+                    </h1>
+                    <p class="lead text-white-50 mb-4">{{ user.email }}</p>
+                    
+                    <div class="profile-actions">
+                        <a href="{% url 'update_profile' %}" class="btn btn-primary btn-lg me-3">
+                            <i class="fas fa-edit me-2"></i>Update Profile
+                        </a>
+                        <a href="{% url 'delete_profile' %}" class="btn btn-outline-light btn-lg">
+                            <i class="fas fa-trash me-2"></i>Delete Profile
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Main Content -->
+<div class="main-content py-5">
+    <div class="container">
+        <div class="row g-4">
+            <!-- Sidebar with Profile Info -->
+            <div class="col-lg-4">
+                <div class="sticky-top" style="top: 2rem;">
+                    <!-- Profile Stats Cards -->
+                    <div class="row g-3 mb-4">
+                        <div class="col-6">
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-project-diagram"></i>
+                                </div>
+                                <div>
+                                    <h3 class="stat-number">{{ projects|length }}</h3>
+                                    <p class="stat-label">Projects</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-heart"></i>
+                                </div>
+                                <div>
+                                    <h3 class="stat-number">{{ donations|length }}</h3>
+                                    <p class="stat-label">Donations</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Profile Details Card -->
+                    <div class="info-card">
+                        <div class="info-card-header">
+                            <h5><i class="fas fa-user-circle me-2"></i>Profile Information</h5>
+                        </div>
+                        <div class="info-card-body">
+                            <div class="info-item">
+                                <div class="info-icon">
+                                    <i class="fas fa-globe"></i>
+                                </div>
+                                <div class="info-content">
+                                    <span class="info-label">Country</span>
+                                    <span class="info-value">{{ profile.country|default:"Not specified" }}</span>
+                                </div>
+                            </div>
+                            
+                            <div class="info-item">
+                                <div class="info-icon">
+                                    <i class="fas fa-phone"></i>
+                                </div>
+                                <div class="info-content">
+                                    <span class="info-label">Phone</span>
+                                    <span class="info-value">{{ profile.phone_number|default:"Not specified" }}</span>
+                                </div>
+                            </div>
+                            
+                            <div class="info-item">
+                                <div class="info-icon">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                </div>
+                                <div class="info-content">
+                                    <span class="info-label">Address</span>
+                                    <span class="info-value">{{ profile.address|default:"Not specified" }}</span>
+                                </div>
+                            </div>
+                            
+                            <div class="info-item">
+                                <div class="info-icon">
+                                    <i class="fas fa-calendar"></i>
+                                </div>
+                                <div class="info-content">
+                                    <span class="info-label">Birthdate</span>
+                                    <span class="info-value">{{ profile.birthdate|date:"M d, Y"|default:"Not specified" }}</span>
+                                </div>
+                            </div>
+                            
+                            <div class="info-item">
+                                <div class="info-icon">
+                                    <i class="fas fa-venus-mars"></i>
+                                </div>
+                                <div class="info-content">
+                                    <span class="info-label">Gender</span>
+                                    <span class="info-value">
+                                        {% if profile.gender == 'M' %}
+                                            Male
+                                        {% elif profile.gender == 'F' %}
+                                            Female
+                                        {% else %}
+                                            Not specified
+                                        {% endif %}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Main Content Area -->
+            <div class="col-lg-8">
+                <!-- Navigation Tabs -->
+                <div class="content-tabs mb-4">
+                    <ul class="nav nav-pills" id="profileTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="projects-tab" data-bs-toggle="pill" 
+                                    data-bs-target="#projects" type="button" role="tab" aria-controls="projects" aria-selected="true">
+                                <i class="fas fa-project-diagram me-2"></i>My Projects
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="donations-tab" data-bs-toggle="pill" 
+                                    data-bs-target="#donations" type="button" role="tab" aria-controls="donations" aria-selected="false">
+                                <i class="fas fa-heart me-2"></i>My Donations
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- Tab Content -->
+                <div class="tab-content" id="profileTabsContent">
+                    <!-- Projects Tab -->
+                    <div class="tab-pane fade show active" id="projects" role="tabpanel" aria-labelledby="projects-tab">
+                        <div class="content-header">
+                            <h3><i class="fas fa-project-diagram me-2"></i>My Projects</h3>
+                            <a href="{% url 'user_projects' %}" class="btn btn-outline-primary">
+                                <i class="fas fa-arrow-right me-2"></i>View All Projects
+                            </a>
+                        </div>
+                        
+                        {% if projects %}
+                            <div class="row g-4">
+                                {% for project in projects|slice:":3" %}
+                                    <div class="col-md-6 col-xl-4">
+                                        <div class="project-card">
+                                            <div class="project-image">
+                                                {% if project.images.first %}
+                                                    <img src="{{ project.images.first.image.url }}" alt="{{ project.title }}">
+                                                {% else %}
+                                                    <img src="{% static 'img/default-project.jpg' %}" alt="Default Image">
+                                                {% endif %}
+                                                <div class="project-overlay">
+                                                    <a href="{% url 'project_detail' project.slug %}" class="btn btn-primary btn-sm">
+                                                        <i class="fas fa-eye me-1"></i>View Details
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <div class="project-content">
+                                                <h5 class="project-title">{{ project.title }}</h5>
+                                                <div class="project-progress">
+                                                    <div class="progress-info">
+                                                        <span class="progress-label">Progress</span>
+                                                        <span class="progress-percentage">{{ project.progress_percentage }}%</span>
+                                                    </div>
+                                                    <div class="progress">
+                                                        <div class="progress-bar" style=`width: {{ project.progress_percentage }}%`></div>
+                                                    </div>
+                                                </div>
+                                                <div class="project-funding">
+                                                    <span class="amount-raised">${{ project.amount_raised }}</span>
+                                                    <span class="amount-target">of ${{ project.total_target }}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <div class="empty-state">
+                                <div class="empty-icon">
+                                    <i class="fas fa-project-diagram"></i>
+                                </div>
+                                <h4>No Projects Yet</h4>
+                                <p>You haven't created any projects yet. Start by creating your first project!</p>
+                                <a href="{% url 'project-create' %}" class="btn btn-primary btn-lg">
+                                    <i class="fas fa-plus me-2"></i>Create Your First Project
+                                </a>
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Donations Tab -->
+                    <div class="tab-pane fade" id="donations" role="tabpanel" aria-labelledby="donations-tab">
+                        <div class="content-header">
+                            <h3><i class="fas fa-heart me-2"></i>My Donations</h3>
+                            <a href="{% url 'user_donations' %}" class="btn btn-outline-primary">
+                                <i class="fas fa-arrow-right me-2"></i>View All Donations
+                            </a>
+                        </div>
+                        
+                        {% if donations %}
+                            <div class="donations-list">
+                                {% for donation in donations|slice:":5" %}
+                                    <div class="donation-item">
+                                        <div class="donation-info">
+                                            <h6 class="donation-project">
+                                                <a href="{% url 'project_detail' donation.project.slug %}">
+                                                    {{ donation.project.title }}
+                                                </a>
+                                            </h6>
+                                            <p class="donation-date">
+                                                <i class="fas fa-calendar me-1"></i>
+                                                {{ donation.created_at|date:"M d, Y" }}
+                                            </p>
+                                        </div>
+                                        <div class="donation-amount">
+                                            <span class="amount">${{ donation.amount }}</span>
+                                            {% if donation.payment_status == 'completed' %}
+                                                <span class="badge status-completed">
+                                                    <i class="fas fa-check me-1"></i>Completed
+                                                </span>
+                                            {% elif donation.payment_status == 'pending' %}
+                                                <span class="badge status-pending">
+                                                    <i class="fas fa-clock me-1"></i>Pending
+                                                </span>
+                                            {% else %}
+                                                <span class="badge status-failed">
+                                                    <i class="fas fa-times me-1"></i>Failed
+                                                </span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <div class="empty-state">
+                                <div class="empty-icon">
+                                    <i class="fas fa-heart"></i>
+                                </div>
+                                <h4>No Donations Yet</h4>
+                                <p>You haven't made any donations yet. Explore projects and start supporting causes you care about!</p>
+                                <a href="{% url 'project-list' %}" class="btn btn-primary btn-lg">
+                                    <i class="fas fa-search me-2"></i>Explore Projects
+                                </a>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Hero Section */
+.hero-section {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100" fill="white" opacity="0.1"><polygon points="0,100 1000,0 1000,100"/></svg>') no-repeat center bottom;
+    background-size: cover;
+}
+
+.profile-header {
+    position: relative;
+    z-index: 2;
+}
+
+.profile-image-container {
+    position: relative;
+    display: inline-block;
+}
+
+.profile-image {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    border: 5px solid rgba(255, 255, 255, 0.3);
+    object-fit: cover;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.profile-status-indicator {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    width: 20px;
+    height: 20px;
+    background: #28a745;
+    border-radius: 50%;
+    border: 3px solid white;
+}
+
+.profile-actions .btn {
+    border-radius: 50px;
+    padding: 12px 30px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+}
+
+.profile-actions .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Main Content */
+.main-content {
+    background: #f8f9fa;
+    min-height: 70vh;
+}
+
+/* Stat Cards */
+.stat-card {
+    background: white;
+    border-radius: 15px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transition: transform 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+}
+
+.stat-icon {
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.2rem;
+}
+
+.stat-number {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #2c3e50;
+    margin: 0;
+    line-height: 1;
+}
+
+.stat-label {
+    color: #6c757d;
+    font-size: 0.9rem;
+    margin: 0;
+    font-weight: 500;
+}
+
+/* Info Card */
+.info-card {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.info-card-header {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    padding: 1.5rem;
+}
+
+.info-card-header h5 {
+    margin: 0;
+    font-weight: 600;
+}
+
+.info-card-body {
+    padding: 0;
+}
+
+.info-item {
+    display: flex;
+    align-items: center;
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid #f1f3f4;
+    gap: 1rem;
+}
+
+.info-item:last-child {
+    border-bottom: none;
+}
+
+.info-icon {
+    width: 40px;
+    height: 40px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #667eea;
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+
+.info-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.info-label {
+    font-size: 0.85rem;
+    color: #6c757d;
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+}
+
+.info-value {
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+/* Content Tabs */
+.content-tabs .nav-pills {
+    background: white;
+    border-radius: 50px;
+    padding: 0.5rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.content-tabs .nav-link {
+    border-radius: 50px;
+    font-weight: 600;
+    color: #6c757d;
+    transition: all 0.3s ease;
+    padding: 12px 24px;
+}
+
+.content-tabs .nav-link.active {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    box-shadow: 0 2px 10px rgba(102, 126, 234, 0.3);
+}
+
+/* Content Header */
+.content-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding: 2rem;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.content-header h3 {
+    margin: 0;
+    color: #2c3e50;
+    font-weight: 700;
+}
+
+.content-header .btn {
+    border-radius: 50px;
+    font-weight: 600;
+}
+
+/* Project Cards */
+.project-card {
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.project-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.project-image {
+    position: relative;
+    height: 200px;
+    overflow: hidden;
+}
+
+.project-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.project-card:hover .project-image img {
+    transform: scale(1.05);
+}
+
+.project-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.project-card:hover .project-overlay {
+    opacity: 1;
+}
+
+.project-content {
+    padding: 1.5rem;
+}
+
+.project-title {
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 1rem;
+}
+
+.project-progress {
+    margin-bottom: 1rem;
+}
+
+.progress-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.progress-label {
+    font-size: 0.9rem;
+    color: #6c757d;
+    font-weight: 500;
+}
+
+.progress-percentage {
+    font-weight: 700;
+    color: #667eea;
+}
+
+.progress {
+    height: 8px;
+    background: #e9ecef;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    background: linear-gradient(90deg, #667eea, #764ba2);
+    height: 100%;
+    border-radius: 10px;
+    transition: width 0.3s ease;
+}
+
+.project-funding {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.amount-raised {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #28a745;
+}
+
+.amount-target {
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+/* Donations List */
+.donations-list {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.donation-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    border-bottom: 1px solid #f1f3f4;
+    transition: background-color 0.3s ease;
+}
+
+.donation-item:hover {
+    background: #f8f9fa;
+}
+
+.donation-item:last-child {
+    border-bottom: none;
+}
+
+.donation-info h6 {
+    margin: 0 0 0.5rem 0;
+    font-weight: 600;
+}
+
+.donation-info a {
+    color: #667eea;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.donation-info a:hover {
+    color: #764ba2;
+}
+
+.donation-date {
+    color: #6c757d;
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+.donation-amount {
+    text-align: right;
+}
+
+.donation-amount .amount {
+    display: block;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #28a745;
+    margin-bottom: 0.5rem;
+}
+
+.donation-amount .badge {
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.status-completed {
+    background: #d4edda;
+    color: #155724;
+}
+
+.status-pending {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.status-failed {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.empty-icon {
+    width: 100px;
+    height: 100px;
+    margin: 0 auto 2rem;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 2.5rem;
+}
+
+.empty-state h4 {
+    color: #2c3e50;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.empty-state p {
+    color: #6c757d;
+    margin-bottom: 2rem;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.empty-state .btn {
+    border-radius: 50px;
+    padding: 12px 30px;
+    font-weight: 600;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .profile-image {
+        width: 120px;
+        height: 120px;
+    }
+    
+    .content-header {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+    
+    .donation-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    
+    .donation-amount {
+        text-align: left;
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+}
+</style>
 {% endblock %}
