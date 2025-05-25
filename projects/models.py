@@ -34,8 +34,9 @@ class Project(models.Model):
     def progress_percentage(self):
         if self.total_target == 0:
             return 0
+        amount = float(self.amount_raised)
         return round((self.amount_raised / self.total_target) * 100, 2)
-    
+
 
 
 class ProjectImage(models.Model):

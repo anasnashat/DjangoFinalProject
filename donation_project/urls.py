@@ -31,8 +31,14 @@ urlpatterns = [
     path('payments/', include('payments.urls')),
     path('donations/', include('donations.urls',namespace='donations')),
     path('profiles/', include('user_profiles.urls')),
-    path('accounts/', include('allauth.urls')),
     path('users/', include('users.urls')),
+    path('reports/', include('reports.urls')),
+    path('comments/', include('comments.urls')),
+    path('replies/', include('replays.urls')),
+    path('ratings/', include('ratings.urls')),
+    path('accounts/', include('allauth.urls')),
+    path('users/', include('users.urls'))
+
 ]
 
 

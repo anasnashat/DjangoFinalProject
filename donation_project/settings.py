@@ -51,12 +51,13 @@ INSTALLED_APPS = [
     'tags',
     'comments',
     'payments',
+    'accounts',
     'home',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
-    'allauth.socialaccount.providers.facebook',
+    'allauth.socialaccount.providers.github'
 ]
 
 MIDDLEWARE = [
@@ -80,7 +81,7 @@ ROOT_URLCONF = 'donation_project.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates']
+        'DIRS': [os.path.join(BASE_DIR, 'templates')]
         ,
         'APP_DIRS': True,
         'OPTIONS': {

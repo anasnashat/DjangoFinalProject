@@ -1,6 +1,6 @@
-{% extends 'base.html' %} 
+{% extends 'base.html' %}
 {% load humanize %}
-{% load static %} 
+{% load static %}
 {% block title %}{{ project.title }}{% endblock %}
 
 {% block content %}
@@ -57,19 +57,31 @@
                         <div>
                             <h1 class="h3 mb-1">{{ project.title }}</h1>
                             <p class="text-muted mb-0">
-                                By <strong>{{ project.created_by.username }}</strong> · {{ project.created_at|date:"F d, Y" }}
+                                By <strong>{{ project.created_by.username }}</strong> · {{project.created_at|date:"F d, Y" }}
                             </p>
                         </div>
-                    </div>
+                        {% include 'ratings/star_rating.html' with project=project user=user %}
 
-                    <div class="mb-4 pb-3 border-bottom">
-                        <h4 class="h5 mb-3">
-                            <i class="bi bi-info-circle text-primary me-2"></i>Project Details
-                        </h4>
-                        <div class="text-muted lh-base">
-                            {{ project.details|linebreaks }}
-                        </div>
                     </div>
+                </div>
+
+
+                {% if user.is_authenticated and project.created_by and user != project.created_by %}
+                    <button onclick="document.getElementById('reportModal').style.display='block'" 
+                            style="background: none; border: none; color: #dc3545; cursor: pointer;">
+                        <i class="bi bi-flag"></i> Report Project
+                    </button>
+                    {% include 'reports/report_modal.html' with content_type='project' object_id=project.id cancel_url=request.path %}
+                {% endif %}
+
+                <div class="mb-4 pb-3 border-bottom">
+                    <h4 class="h5 mb-3">
+                        <i class="bi bi-info-circle text-primary me-2"></i>Project Details
+                    </h4>
+                    <div class="text-muted lh-base">
+                        {{ project.details|linebreaks }}
+                    </div>
+                </div>
 
                     <div class="row g-3 mb-4 pb-3 border-bottom align-items-stretch">
                         <div class="col-md-6 d-flex">
@@ -88,7 +100,7 @@
                                     <i class="bi bi-calendar-event me-1"></i>Duration
                                 </h6>
                                 <p class="mb-1">
-                                    <strong>Start:</strong> {{ project.starting_date|date:"M d, Y" }}
+                                    <strong>Start:</strong> {{ project.starting_date|date:"M d, Y"}}
                                 </p>
                                 <p class="mb-0">
                                     <strong>End:</strong> {{ project.ending_date|date:"M d, Y" }}
@@ -97,83 +109,82 @@
                         </div>
                     </div>
 
-                    <div class="mb-4 pb-3 border-bottom">
-                        <h5 class="h5 mb-3">
-                            <i class="bi bi-tag text-primary me-2"></i>Category & Tags
-                        </h5>
-                        <div class="mb-3">
-                            <span class="badge bg-primary me-2">{{ project.category.name }}</span>
-                        </div>
-                        {% if project.tags.all %}
-                        <div class="d-flex flex-wrap">
-                            {% for tag in project.tags.all %}
-                            <span class="badge bg-light text-dark me-2 mb-2">{{ tag.name }}</span>
-                            {% endfor %}
-                        </div>
-                        {% else %}
-                        <p class="text-muted">No tags available</p>
-                        {% endif %}
+                <div class="mb-4 pb-3 border-bottom">
+                    <h5 class="h5 mb-3">
+                        <i class="bi bi-tag text-primary me-2"></i>Category & Tags
+                    </h5>
+                    <div class="mb-3">
+                        <span class="badge bg-primary me-2">{{ project.category.name }}</span>
                     </div>
-
-                    <div class="mb-4 pb-3 border-bottom">
-                        <h5 class="h5 mb-3">
-                            <i class="bi bi-graph-up text-primary me-2"></i>Funding Progress
-                        </h5>
-                        <div class="d-flex justify-content-between mb-2">
-                            <span class="text-success fw-semibold">${{ project.amount_raised|floatformat:2|intcomma }}
-                                raised</span>
-                            <span class="text-muted">${{ project.total_target|floatformat:2|intcomma }} goal</span>
-                        </div>
-                        <div class="progress mb-2">
-                            <div class="progress-bar bg-success" role="progressbar"
-                                style="width: {{ project.progress_percentage }}%"
-                                aria-valuenow="{{ project.progress_percentage }}" aria-valuemin="0" aria-valuemax="100">
-                            </div>
-                        </div>
-                        <div class="text-center">
-                            <span class="badge bg-success">{{ project.progress_percentage }}% funded</span>
-                        </div>
-                    </div>
-
-                    {% if user.is_authenticated %}
-                    <div class="mb-4">
-                        <h5 class="h5 mb-3">
-                            <i class="bi bi-heart-fill text-danger me-2"></i>Support This
-                            Project
-                        </h5>
-                        <div class="p-4 donation-form rounded">
-                            <form id="donation-form" method="post"
-                                action="{% url 'donations:donation-create' project.slug %}">
-                                {% csrf_token %}
-                                <div class="mb-3">
-                                    <label for="amount" class="form-label fw-semibold">Donation Amount (USD)</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text">$</span>
-                                        <input type="number" id="amount" name="amount" class="form-control" required
-                                            min="1" step="0.01" placeholder="Enter amount" />
-                                    </div>
-                                    <small class="text-muted">Minimum donation is $1.00</small>
-                                </div>
-                                <button type="submit" class="btn btn-success w-100 py-2">
-                                    <i class="bi bi-credit-card me-2"></i>Donate Now
-                                </button>
-                            </form>
-                        </div>
+                    {% if project.tags.all %}
+                    <div class="d-flex flex-wrap">
+                        {% for tag in project.tags.all %}
+                        <span class="badge bg-light text-dark me-2 mb-2">{{ tag.name }}</span>
+                        {% endfor %}
                     </div>
                     {% else %}
-                    <div class="alert alert-warning mt-4">
-                        <i class="bi bi-exclamation-circle me-2"></i>
-                        <strong>Note:</strong> You must
-                        <a href="{% url 'login' %}?next={{ request.path }}" class="alert-link">log in</a>
-                        to support this project.
-                    </div>
+                    <p class="text-muted">No tags available</p>
                     {% endif %}
+                </div>
+               {% include 'comments/comments_section.html' %}
+                <div class="mb-4 pb-3 border-bottom">
+                    <h5 class="h5 mb-3">
+                        <i class="bi bi-graph-up text-primary me-2"></i>Funding Progress
+                    </h5>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-success fw-semibold">${{ project.amount_raised|floatformat:2|intcomma }}
+                            raised</span>
+                        <span class="text-muted">${{ project.total_target|floatformat:2|intcomma }} goal</span>
+                    </div>
+                    <div class="progress mb-2">
+                        <div class="progress-bar bg-success" role="progressbar"
+                            style="width: {{ project.progress_percentage }}%"
+                            aria-valuenow="{{ project.progress_percentage }}" aria-valuemin="0" aria-valuemax="100">
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <span class="badge bg-success">{{ project.progress_percentage }}% funded</span>
+                    </div>
+                </div>
 
-                    <div
-                        class="d-flex flex-column flex-md-row justify-content-between align-items-center pt-3 border-top">
-                        <a href="{% url 'project-list' %}" class="btn btn-outline-secondary mb-3 mb-md-0">
-                            <i class="bi bi-arrow-left me-2"></i>Back to Projects
-                        </a>
+                {% if user.is_authenticated %}
+                <div class="mb-4">
+                    <h5 class="h5 mb-3">
+                        <i class="bi bi-heart-fill text-danger me-2"></i>Support This
+                        Project
+                    </h5>
+                    <div class="p-4 donation-form rounded">
+                        <form id="donation-form" method="post"
+                            action="{% url 'donations:donation-create' project.slug %}">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <label for="amount" class="form-label fw-semibold">Donation Amount (USD)</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">$</span>
+                                    <input type="number" id="amount" name="amount" class="form-control" required min="1"
+                                        step="0.01" placeholder="Enter amount" />
+                                </div>
+                                <small class="text-muted">Minimum donation is $1.00</small>
+                            </div>
+                            <button type="submit" class="btn btn-success w-100 py-2">
+                                <i class="bi bi-credit-card me-2"></i>Donate Now
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                {% else %}
+                <div class="alert alert-warning mt-4">
+                    <i class="bi bi-exclamation-circle me-2"></i>
+                    <strong>Note:</strong> You must
+                    <a href="{% url 'login' %}?next={{ request.path }}" class="alert-link">log in</a>
+                    to support this project.
+                </div>
+                {% endif %}
+
+                <div class="d-flex flex-column flex-md-row justify-content-between align-items-center pt-3 border-top">
+                    <a href="{% url 'project-list' %}" class="btn btn-outline-secondary mb-3 mb-md-0">
+                        <i class="bi bi-arrow-left me-2"></i>Back to Projects
+                    </a>
 
                         {% if user == project.created_by %}
                         <div class="d-flex flex-wrap">

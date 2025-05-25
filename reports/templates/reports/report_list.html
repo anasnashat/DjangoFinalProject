@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Reports Management</h2>
+
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Reason</th>
+                    <th>Reported By</th>
+                    <th>Content</th>
+                    <th>Status</th>
+                    <th>Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for report in reports %}
+                <tr>
+                    <td>{{ report.id }}</td>
+                    <td>{{ report.get_reason_display }}</td>
+                    <td>{{ report.user.username }}</td>
+                    <td>
+                        {% if report.project %}
+                        Project: {{ report.project.title|truncatechars:30 }}
+                        {% elif report.comment %}
+                        Comment: {{ report.comment.content|truncatechars:30 }}
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if report.is_resolved %}
+                        <span class="badge bg-success">Resolved</span>
+                        {% else %}
+                        <span class="badge bg-warning">Pending</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ report.created_at|date:"Y-m-d H:i" }}</td>
+                    <td>
+                        <a href="{% url 'admin:reports_report_change' report.id %}"
+                            class="btn btn-sm btn-primary">View</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="7" class="text-center">No reports found</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

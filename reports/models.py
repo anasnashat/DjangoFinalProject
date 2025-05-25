@@ -1,33 +1,23 @@
-from django.core.exceptions import ValidationError
+
 from django.db import models
 
-# Create your models here.
 
 class Report(models.Model):
-    reason = models.TextField()
+    REASON_CHOICES = [
+        ('spam', 'Spam or misleading'),
+        ('abuse', 'Abusive content'),
+        ('scam', 'Scam or fraud'),
+        ('other', 'Other'),
+    ]
+    
+    reason = models.CharField(max_length=20, choices=REASON_CHOICES)
+    description = models.TextField(blank=True, null=True)
     is_resolved = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    user = models.ForeignKey('auth.User', on_delete=models.CASCADE)
-    project = models.ForeignKey('projects.Project', on_delete=models.CASCADE, null=True, blank=True)
-    comment = models.ForeignKey('comments.Comment', on_delete=models.CASCADE, null=True, blank=True)
-    replay = models.ForeignKey('replays.Reply', on_delete=models.CASCADE, null=True, blank=True)
+    user = models.ForeignKey('auth.User', on_delete=models.CASCADE, related_name='reports_made')
+    project = models.ForeignKey('projects.Project', on_delete=models.CASCADE, null=True, blank=True, related_name='reports')
+    comment = models.ForeignKey('comments.Comment', on_delete=models.CASCADE, null=True, blank=True, related_name='reports')
+
     def __str__(self):
-        return self.reason
-
-    def clean(self):
-        super().clean()
-        entities = [bool(self.project), bool(self.comment), bool(self.replay)]
-        if sum(entities) != 1:
-            raise ValidationError(
-                "A report must reference exactly one of: project or comment"
-            )
-
-        if self.is_resolved and not self.reason:
-            raise ValidationError({'reason': 'This field is required.'})
-
-    def save(self, *args, **kwargs):
-        self.full_clean()
-        super().save(*args, **kwargs)
-
-
+        return f"Report #{self.id} - {self.get_reason_display()}"

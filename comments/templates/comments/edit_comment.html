@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Comment{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-primary text-white rounded-top">
+                    <h4 class="mb-0 d-flex align-items-center py-3">
+                        <i class="fas fa-edit me-2"></i> Edit Comment
+                    </h4>
+                </div>
+                <div class="card-body p-4 p-md-5">
+                    <!-- Project Info -->
+                    <div class="alert alert-info rounded-3 d-flex flex-column gap-3 py-3">
+                        <h6 class="mb-0 fw-bold">
+                            <i class="fas fa-project-diagram me-2"></i>
+                            Commenting on: {{ project.title }}
+                        </h6>
+                        <small class="text-muted">{{ project.details|truncatewords:20 }}</small>
+                    </div>
+
+                    <!-- Edit Form -->
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mb-4">
+                            <label for="id_content" class="form-label fw-bold">Your Comment:</label>
+                            <textarea name="content" id="id_content" class="form-control rounded-3" rows="6"
+                                required>{{ form.content.value|default_if_none:'' }}</textarea>
+                            {% if form.content.errors %}
+                            <div class="invalid-feedback d-block mt-2">
+                                {% for error in form.content.errors %}
+                                {{ error }}
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-3">
+                            <a href="{% url 'project-detail' slug=project.slug %}"
+                                class="btn btn-outline-secondary rounded-pill px-4 py-2">
+                                <i class="fas fa-times me-2"></i> Cancel
+                            </a>
+                            <button type="submit" class="btn btn-primary rounded-pill px-4 py-2">
+                                <i class="fas fa-save me-2"></i> Update Comment
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- Original Comment Info -->
+                    <div class="mt-5 pt-4 border-top">
+                        <h6 class="text-muted mb-3 fw-bold">Original Comment:</h6>
+                        <div class="bg-light p-4 rounded-3 shadow-sm">
+                            <p class="mb-2 text-dark">{{ comment.content|linebreaks }}</p>
+                            <small class="text-muted">
+                                Posted {{ comment.created_at|timesince }} ago
+                                {% if comment.updated_at != comment.created_at %}
+                                • Last edited {{ comment.updated_at|timesince }} ago
+                                {% endif %}
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        transition: transform 0.2s ease-in-out;
+    }
+
+    .card:hover {
+        transform: translateY(-2px);
+    }
+
+    .btn {
+        transition: all 0.3s ease;
+    }
+
+    .btn:hover {
+        transform: scale(1.05);
+    }
+
+    .alert-info {
+        background-color: #e7f1ff;
+        border-color: #d3e2ff;
+    }
+
+    .form-control:focus {
+        border-color: #0057cc;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    }
+
+    .form-control {
+        resize: vertical;
+    }
+
+    @media (max-width: 576px) {
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+        }
+
+        .alert-info {
+            padding: 0.75rem;
+        }
+    }
+
+    /* Custom animations for smoother transitions */
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .card {
+        animation: fadeIn 0.3s ease-in-out;
+    }
+</style>
+{% endblock %}

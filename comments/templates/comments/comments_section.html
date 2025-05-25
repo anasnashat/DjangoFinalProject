@@ -1,0 +1,285 @@
+<!-- Comments Section -->
+<div class="comments-section mt-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h4 class="mb-4 d-flex align-items-center">
+                    <i class="fas fa-comments me-2 text-primary"></i> Comments 
+                    <span class="badge bg-primary ms-2">{{ project.comment_set.count }}</span>
+                </h4>
+                
+                <!-- Add Comment Form -->
+                {% if user.is_authenticated %}
+                <div class="card mb-4 shadow-sm border-0">
+                    <div class="card-body p-4">
+                        <form method="post" action="{% url 'comments:add_comment' project.id %}">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                <label for="id_content" class="form-label fw-bold">Add a Comment:</label>
+                                <textarea name="content" id="id_content" class="form-control rounded-3" required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary rounded-pill px-4">
+                                <i class="fas fa-paper-plane me-2"></i> Post Comment
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                {% else %}
+                <div class="alert alert-info rounded-3 d-flex align-items-center">
+                    <i class="fas fa-info-circle me-2"></i>
+                    <span>Please <a href="{% url 'login' %}" class="alert-link">login</a> to add comments.</span>
+                </div>
+                {% endif %}
+                
+                <!-- Comments List -->
+                <div class="comments-list">
+                    {% for comment in comments %}
+                    <div class="card mb-3 comment-card shadow-sm border-0" data-comment-id="{{ comment.id }}">
+                        <div class="card-body p-4">
+                            <!-- Comment Header -->
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <div class="d-flex align-items-center">
+                                    <div class="user-avatar me-3">
+                                        {% if comment.user.profile.profile_picture %}
+                                            <img src="{{ comment.user.profile.image }}" alt="{{ comment.user.get_full_name }}" class="rounded-circle" width="45" height="45">
+                                        {% else %}
+                                            <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center" style="width: 45px; height: 45px;">
+                                                <span class="text-white fw-bold">{{ comment.user.first_name|first|upper }}{{ comment.user.last_name|first|upper }}</span>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-1 fw-bold">{{ comment.user.get_full_name|default:comment.user.username }}</h6>
+                                        <small class="text-muted">{{ comment.created_at|timesince }} ago</small>
+                                    </div>
+                                </div>
+                                {% if user == comment.user %}
+                                <div class="dropdown">
+                                    <button class="btn btn-sm btn-outline-secondary rounded-circle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="fas fa-ellipsis-v"></i>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end shadow">
+                                        <li><a class="dropdown-item" href="{% url 'comments:edit_comment' comment.id %}">
+                                            <i class="fas fa-edit me-2"></i> Edit
+                                        </a></li>
+                                        <li><a class="dropdown-item text-danger" href="{% url 'comments:delete_comment' comment.id %}">
+                                            <i class="fas fa-trash me-2"></i> Delete
+                                        </a></li>
+                                    </ul>
+                                </div>
+                                {% endif %}
+                            </div>
+                            
+                            <!-- Comment Content -->
+                            <div class="comment-content mb-3">
+                                <p class="mb-0 text-dark">{{ comment.content|linebreaks }}</p>
+                            </div>
+                            
+                            <!-- Comment Actions -->
+                            <div class="comment-actions d-flex align-items-center">
+                                {% if user.is_authenticated %}
+                                <button class="btn btn-sm btn-outline-primary rounded-pill me-2 reply-btn" data-comment-id="{{ comment.id }}">
+                                    <i class="fas fa-reply me-1"></i> Reply
+                                </button>
+                                {% endif %}
+                                {% if comment.reply_set.count > 0 %}
+                                <button class="btn btn-sm btn-outline-secondary rounded-pill toggle-replies-btn" data-comment-id="{{ comment.id }}">
+                                    <i class="fas fa-chevron-down me-1"></i> 
+                                    <span class="replies-count">{{ comment.reply_set.count }}</span> 
+                                    <span class="replies-text">{{ comment.reply_set.count|pluralize:"Reply,Replies" }}</span>
+                                </button>
+                                {% endif %}
+                            </div>
+                            
+                            <!-- Reply Form (Hidden by default) -->
+                            {% if user.is_authenticated %}
+                            <div class="reply-form mt-4" id="reply-form-{{ comment.id }}" style="display: none;">
+                                <form method="post" action="{% url 'replies:add_reply' comment.id %}">
+                                    {% csrf_token %}
+                                    <div class="mb-3">
+                                        <textarea name="replay" id="id_replay_{{ comment.id }}" class="form-control rounded-3" required></textarea>
+                                    </div>
+                                    <div class="d-flex gap-2">
+                                        <button type="submit" class="btn btn-sm btn-primary rounded-pill">
+                                            <i class="fas fa-paper-plane me-1"></i> Post Reply
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill cancel-reply-btn" data-comment-id="{{ comment.id }}">
+                                            Cancel
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                            {% endif %}
+                            
+                            <!-- Replies List (Hidden by default) -->
+                            <div class="replies-list mt-4" id="replies-{{ comment.id }}" style="display: none;">
+                                {% for reply in comment.reply_set.all %}
+                                <div class="card bg-light mb-2 reply-card shadow-sm border-0" data-reply-id="{{ reply.id }}">
+                                    <div class="card-body py-3 px-4">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <div class="d-flex align-items-center">
+                                                <div class="user-avatar me-2">
+                                                    {% if reply.user.profile.profile_picture %}
+                                                        <img src="{{ reply.user.profile.profile_picture.url }}" alt="{{ reply.user.get_full_name }}" class="rounded-circle" width="35" height="35">
+                                                    {% else %}
+                                                        <div class="bg-secondary rounded-circle d-flex align-items-center justify-content-center" style="width: 35px; height: 35px;">
+                                                            <span class="text-white small">{{ reply.user.first_name|first|upper }}{{ reply.user.last_name|first|upper }}</span>
+                                                        </div>
+                                                    {% endif %}
+                                                </div>
+                                                <div>
+                                                    <h6 class="mb-1 small fw-bold">{{ reply.user.get_full_name|default:reply.user.username }}</h6>
+                                                    <small class="text-muted">{{ reply.created_at|timesince }} ago</small>
+                                                </div>
+                                            </div>
+                                            {% if user == reply.user %}
+                                            <div class="dropdown">
+                                                <button class="btn btn-sm btn-outline-secondary rounded-circle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    <i class="fas fa-ellipsis-v"></i>
+                                                </button>
+                                                <ul class="dropdown-menu dropdown-menu-end shadow">
+                                                    <li><a class="dropdown-item" href="{% url 'replies:edit_reply' reply.id %}">
+                                                        <i class="fas fa-edit me-2"></i> Edit
+                                                    </a></li>
+                                                    <li><a class="dropdown-item text-danger" href="{% url 'replies:delete_reply' reply.id %}">
+                                                        <i class="fas fa-trash me-2"></i> Delete
+                                                    </a></li>
+                                                </ul>
+                                            </div>
+                                            {% endif %}
+                                        </div>
+                                        <div class="reply-content mt-2">
+                                            <p class="mb-0 small text-dark">{{ reply.replay|linebreaks }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="text-center py-5">
+                        <i class="fas fa-comments fa-3x text-muted mb-3"></i>
+                        <h5 class="text-muted">No comments yet</h5>
+                        <p class="text-muted">Be the first to share your thoughts about this project!</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript for Comments and Replies -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Toggle replies visibility
+    document.querySelectorAll('.toggle-replies-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const commentId = this.dataset.commentId;
+            const repliesList = document.getElementById(`replies-${commentId}`);
+            const icon = this.querySelector('i');
+            
+            if (repliesList.style.display === 'none') {
+                repliesList.style.display = 'block';
+                icon.className = 'fas fa-chevron-up me-1';
+                repliesList.classList.add('animate__animated', 'animate__fadeIn');
+            } else {
+                repliesList.classList.remove('animate__animated', 'animate__fadeIn');
+                repliesList.style.display = 'none';
+                icon.className = 'fas fa-chevron-down me-1';
+            }
+        });
+    });
+    
+    // Show reply form
+    document.querySelectorAll('.reply-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const commentId = this.dataset.commentId;
+            const replyForm = document.getElementById(`reply-form-${commentId}`);
+            if (replyForm.style.display === 'none') {
+                replyForm.style.display = 'block';
+                replyForm.classList.add('animate__animated', 'animate__fadeIn');
+                replyForm.querySelector('textarea').focus();
+            } else {
+                replyForm.classList.remove('animate__animated', 'animate__fadeIn');
+                replyForm.style.display = 'none';
+            }
+        });
+    });
+    
+    // Cancel reply
+    document.querySelectorAll('.cancel-reply-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const commentId = this.dataset.commentId;
+            const replyForm = document.getElementById(`reply-form-${commentId}`);
+            replyForm.classList.remove('animate__animated', 'animate__fadeIn');
+            replyForm.style.display = 'none';
+            replyForm.querySelector('textarea').value = '';
+        });
+    });
+});
+</script>
+
+<style>
+.comment-card {
+    border-left: 4px solid #007bff;
+    transition: transform 0.2s ease-in-out;
+}
+
+.comment-card:hover {
+    transform: translateY(-2px);
+}
+
+.reply-card {
+    border-left: 3px solid #6c757d;
+    margin-left: 20px;
+    transition: transform 0.2s ease-in-out;
+}
+
+.reply-card:hover {
+    transform: translateY(-1px);
+}
+
+.comment-actions .btn {
+    transition: all 0.3s ease;
+}
+
+.comment-actions .btn:hover {
+    background-color: #f1f3f5;
+    transform: scale(1.05);
+}
+
+.user-avatar img {
+    object-fit: cover;
+    border: 1px solid #dee2e6;
+}
+
+.dropdown-toggle::after {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .reply-card {
+        margin-left: 15px;
+    }
+    
+    .user-avatar {
+        margin-right: 0.75rem !important;
+    }
+    
+    .comment-card, .reply-card {
+        border-left-width: 3px;
+    }
+}
+
+/* Custom animations for smoother transitions */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.animate__animated.animate__fadeIn {
+    animation: fadeIn 0.3s ease-in-out;
+}
+</style>
