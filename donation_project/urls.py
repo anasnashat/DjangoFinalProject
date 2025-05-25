@@ -31,7 +31,6 @@ urlpatterns = [
     path('donations/', include('donations.urls',namespace='donations')),
     path('profiles/', include('user_profiles.urls')),
     path('accounts/', include('allauth.urls')),
-    path('users/', include('users.urls')),
     path('users/', include('users.urls'))
 ]
 

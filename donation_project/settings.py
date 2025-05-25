@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'tags',
     'comments',
     'payments',
+    'accounts',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
@@ -79,7 +80,7 @@ ROOT_URLCONF = 'donation_project.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates']
+        'DIRS': [os.path.join(BASE_DIR, 'templates')]
         ,
         'APP_DIRS': True,
         'OPTIONS': {
@@ -174,7 +175,7 @@ MEDIA_ROOT = BASE_DIR / 'media'
 SITE_ID = 1
 
 # Redirect after login/logout
-LOGIN_REDIRECT_URL = '/home/'
+LOGIN_REDIRECT_URL = '/users/home/'
 LOGOUT_REDIRECT_URL = '/login/'
 
 # Require email
