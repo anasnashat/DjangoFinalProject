@@ -1,0 +1,180 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Home | Donation Platform{% endblock %}
+{% block container_start %}{% comment %}No container wrapper{% endcomment %}{% endblock %}
+{% block container_end %}{% comment %}No container wrapper{% endcomment %}{% endblock %}
+{% block content %}
+
+<!-- Hero Section -->
+<section class="hero bg-dark text-white text-center">
+  <div>
+    <h1 class="display-4">Support a Cause. Change a Life.</h1>
+    <p class="lead">Join millions who are making an impact. Start your journey today.</p>
+    <form action="{% url 'search_results' %}" method="get" class="d-flex justify-content-center mt-4">
+      <input type="text" name="q" class="form-control w-50 me-2 text-white" placeholder="Search campaigns...">
+      <button type="submit" class="btn btn-primary">Search</button>
+    </form>
+  </div>
+</section>
+
+<!-- How It Works -->
+<section class="py-5">
+  <div class="container">
+    <h2 class="text-center how-title mb-5">How It Works</h2>
+    <div class="row text-center">
+      <div class="col-md-4">
+        <img src="https://img.icons8.com/?size=100&id=SWUTKl5FcWrt&format=png&color=40C057" width="60">
+        <h5 class="mt-3">Start a Campaign</h5>
+        <p>Create a project to raise money for yourself or others in need.</p>
+      </div>
+      <div class="col-md-4">
+        <img src="https://img.icons8.com/?size=100&id=RU4BUkUScHfa&format=png&color=40C057" width="60">
+        <h5 class="mt-3">Share with the World</h5>
+        <p>Spread the word to gain support and donations.</p>
+      </div>
+      <div class="col-md-4">
+        <img src="https://img.icons8.com/?size=100&id=nxdse0gU4erx&format=png&color=40C057" width="60">
+        <h5 class="mt-3">Receive Donations</h5>
+        <p>Watch your support grow and help your cause succeed.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Top Rated Projects -->
+<section class="bg-light shadowSection">
+  <div class="container">
+    <h2 class="mb-4 text-success">Top Rated Topics</h2>
+    <div id="topProjectsCarousel" class="carousel slide" data-bs-ride="carousel">
+      <div class="carousel-inner border-0">
+        {% for p in top_projects %}
+        <div class="carousel-item {% if forloop.first %}active{% endif %}">
+          <div class="card mx-auto border-0 h-100" style="width: 100%;">
+            {% if p.images.all %}
+            <img src="{{ p.images.all.0.image.url }}" class="top-image card-img w-100" alt="{{ p.title }}">
+            {% else %}
+            <img src="{% static 'default.jpg' %}" class="card-img-top">
+            {% endif %}
+            <div class="card-body text-center position-absolute ">
+              <h5 class="card-title">{{ p.title }}</h5>
+              <p class="card-text">Average Rating: {{ p.avg_rating|default:"0.0" }}</p>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      <button class="carousel-control-prev" type="button" data-bs-target="#topProjectsCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#topProjectsCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- Featured Projects -->
+<section class=" shadowSection">
+  <div class="container">
+    <h2 class="mb-4 text-success">Featured Topics</h2>
+    <div class="swiper featured-swiper">
+      <div class="swiper-wrapper">
+        {% for p in featured_projects %}
+        <div class="swiper-slide">
+          <div class="card p-3 mb-3 shadow-sm">
+            {% if p.images.all %}
+            <img src="{{ p.images.all.0.image.url }}" class="top-image card-img w-100" alt="{{ p.title }}">
+            {% endif %}
+            <div class="card-body">
+              <h5 class="card-title">{{ p.title }}</h5>
+              {% if p.details %}
+              <p class="card-text">{{ p.details|truncatewords:20 }}</p>
+              {% else %}
+              <p class="card-text">this needs your donation</p>
+              {% endif %}
+              <p class="text-muted mb-3">Target: ${{ p.total_target }}</p>
+            </div>
+             <div class="mt-auto">
+                    <a href="{% url 'project-detail' p.slug %}" class="btn btn-success p-2 w-100">View Details</a>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      <div class="swiper-pagination"></div>
+      <div class="swiper-button-prev"></div>
+      <div class="swiper-button-next"></div>
+    </div>
+  </div>
+</section>
+
+<!-- Testimonials -->
+<section class="bg-dark text-white py-5">
+  <div class="container">
+    <h2 class="text-center text-white mb-5">What Donors Are Saying</h2>
+    <div class="row">
+      <div class="col-md-4">
+        <blockquote class="blockquote">“This platform made it easy to support people I care about. Incredible experience!”</blockquote>
+        <footer class="blockquote-footer text-white-50" style="background-color: #0f3323;">Amina R.</footer>
+      </div>
+      <div class="col-md-4">
+        <blockquote class="blockquote">“I felt secure giving my donation. Very smooth and trustworthy site.”</blockquote>
+        <footer class="blockquote-footer text-white-50 " style="background-color: #0f3323;">Mohamed T.</footer>
+      </div>
+      <div class="col-md-4">
+        <blockquote class="blockquote">“So many touching stories. I was moved to help and it was easy to do.”</blockquote>
+        <footer class="blockquote-footer text-white-50 " style="background-color: #0f3323;">Lina S.</footer>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Categories -->
+<section class="py-5">
+  <div class="container">
+    <h2 class="text-sucsess mb-4">Browse by Category</h2>
+    <div class="row g-3">
+      {% for cat in categories %}
+      <div class="col-sm-6 col-md-4 col-lg-3">
+        <a href="{% url 'category_projects' cat.id %}" class="text-decoration-none">
+          <div class="card shadow-sm h-100 category-card">
+            <div class="card-body d-flex align-items-center justify-content-center">
+              <h5 class="card-title text-center mb-0">{{ cat.name }}</h5>
+            </div>
+          </div>
+        </a>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+
+
+
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
+<script>
+  const swiper = new Swiper('.featured-swiper', {
+    loop: true,
+    spaceBetween: 20,
+    slidesPerView: 1,
+    breakpoints: {
+      768: { slidesPerView: 2 },
+      992: { slidesPerView: 3 }
+    },
+    pagination: {
+      el: '.swiper-pagination',
+      clickable: true,
+    },
+    navigation: {
+      nextEl: '.swiper-button-next',
+      prevEl: '.swiper-button-prev',
+    },
+  });
+</script>
+{% endblock %}

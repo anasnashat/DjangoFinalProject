@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'comments',
     'payments',
     'accounts',
+    'home',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
@@ -175,8 +176,8 @@ MEDIA_ROOT = BASE_DIR / 'media'
 SITE_ID = 1
 
 # Redirect after login/logout
-LOGIN_REDIRECT_URL = '/users/home/'
-LOGOUT_REDIRECT_URL = '/login/'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/users/login/'
 
 # Require email
 ACCOUNT_EMAIL_REQUIRED = True
