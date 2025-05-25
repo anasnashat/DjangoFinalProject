@@ -160,3 +160,7 @@ STRIPE_SECRET_KEY = 'sk_test_51Lq8c2FnT18gA9slibA60HH07pyw80saD8kha7LlQSSbjUw2AV
 # Media files configuration
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+# Authentication URLs
+LOGIN_URL = '/users/login/'
+LOGIN_REDIRECT_URL = '/users/home/'
