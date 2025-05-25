@@ -24,12 +24,15 @@ def temporary_login_view(request):
     return HttpResponse("Login page placeholder")
 
 urlpatterns = [
+    path('',include('home.urls')),
     path('login/', temporary_login_view, name='login'),
     path('admin/', admin.site.urls),
     path('projects/', include('projects.urls')),
     path('payments/', include('payments.urls')),
     path('donations/', include('donations.urls',namespace='donations')),
     path('profiles/', include('user_profiles.urls')),
+    path('accounts/', include('allauth.urls')),
+    path('users/', include('users.urls')),
     path('users/', include('users.urls'))
 ]
 

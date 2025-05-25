@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout
 from django.contrib import messages
 from django.core.mail import send_mail
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model,logout
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
 from django.template.loader import render_to_string
@@ -77,7 +77,10 @@ def login_view(request):
         if form.is_valid():
             user = form.get_user()
             login(request, user)
-            return redirect('home')
+            if user.is_staff:
+                return redirect('/admin/')
+            else:
+                return redirect('homepage')
     else:
         form = LoginForm()
     return render(request, "users/login.html", {"form": form})
@@ -85,8 +88,11 @@ def login_view(request):
 # redirect after login
 @login_required
 def home(request):
-    return render(request, 'users/home.html')
+    return redirect('homepage')  
 
-
+@login_required
+def logout_view(request):
+    logout(request)
+    return redirect('homepage')  
 
 
