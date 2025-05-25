@@ -60,7 +60,10 @@
                                 By <strong>{{ project.created_by.username }}</strong> · {{ project.created_at|date:"F d,  Y" }}
                             </p>
                         </div>
-                      
+                     
+                        {% include 'ratings/star_rating.html' with project=project user=user %}
+                     
+
                     
                     </div>
                 </div>

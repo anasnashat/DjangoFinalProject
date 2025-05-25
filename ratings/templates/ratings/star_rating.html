@@ -1,0 +1,163 @@
+{% load rating_tags %}
+{% load static %}
+
+
+<div class="star-rating mb-3 " data-project-id="{{ project.id }}">
+    {% if not user == project.created_by %}
+    <div class="stars-container d-inline-flex">
+        {% star_range as stars %}
+        {% for star in stars %}
+        <span class="star btn p-0" data-rating="{{ star }}" role="button">
+            <i class="bi bi-star{% if project.average_rating >= star %}-fill{% endif %} text-warning fs-4"></i>
+        </span>
+        {% endfor %}
+    </div>
+    {% endif %}
+    <div class="rating-info ms-2 d-inline-flex align-items-center">
+        <span class="average-rating fw-bold">{{ project.average_rating|default:"0" }}</span>
+        <span class="text-muted small ms-1">
+            (<span class="total-ratings">{{ project.total_ratings|default:"0" }}</span>
+            rating{% if project.total_ratings != 1 %}s{% endif %})
+        </span>
+    </div>
+    {% if user.is_authenticated %}
+    <div class="user-rating-text small text-primary ms-2" style="display: none;">
+        Your rating: <span class="user-rating-value"></span>
+    </div>
+    {% endif %}
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const ratingContainers = document.querySelectorAll('.star-rating:not(.readonly)');
+
+        ratingContainers.forEach(container => {
+            const projectId = container.dataset.projectId;
+            const stars = container.querySelectorAll('.star');
+            const loginUrl = container.dataset.loginUrl || null;
+
+            loadCurrentRating(projectId, container);
+
+            stars.forEach(star => {
+                const rating = parseInt(star.dataset.rating);
+
+                star.addEventListener('mouseenter', () => {
+                    highlightStars(stars, rating);
+                });
+
+                star.addEventListener('mouseleave', () => {
+                    loadCurrentRating(projectId, container);
+                });
+
+                star.addEventListener('click', () => {
+                    if (loginUrl) {
+                        window.location.href = loginUrl;
+                        return;
+                    }
+                    submitRating(projectId, rating, container);
+                });
+            });
+        });
+
+        function highlightStars(stars, rating) {
+            stars.forEach(star => {
+                const starRating = parseInt(star.dataset.rating);
+                const icon = star.querySelector('i');
+                if (icon) {
+                    icon.classList.toggle('bi-star-fill', starRating <= rating);
+                    icon.classList.toggle('bi-star', starRating > rating);
+                }
+            });
+        }
+
+        function loadCurrentRating(projectId, container) {
+            fetch(`/ratings/get/${projectId}/`)
+                .then(response => {
+                    if (!response.ok) throw new Error('Failed to load rating');
+                    return response.json();
+                })
+                .then(data => {
+                    const stars = container.querySelectorAll('.star');
+                    const averageEl = container.querySelector('.average-rating');
+                    const totalEl = container.querySelector('.total-ratings');
+                    const userRatingText = container.querySelector('.user-rating-text');
+                    const userRatingValue = container.querySelector('.user-rating-value');
+
+                    if (averageEl) averageEl.textContent = data.average_rating || '0';
+                    if (totalEl) totalEl.textContent = data.total_ratings || '0';
+
+                    const avgRating = Math.round(parseFloat(data.average_rating) || 0);
+                    highlightStars(stars, avgRating);
+
+                    if (data.user_rating && userRatingText && userRatingValue) {
+                        userRatingValue.textContent = data.user_rating;
+                        userRatingText.style.display = 'inline';
+                        highlightStars(stars, data.user_rating);
+                    } else if (userRatingText) {
+                        userRatingText.style.display = 'none';
+                    }
+
+
+                })
+                .catch(error => console.error('Error loading rating:', error));
+        }
+
+
+        function submitRating(projectId, rating, container) {
+            const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value;
+            if (!csrfToken) {
+                console.error('CSRF token missing');
+                return;
+            }
+
+            fetch(`/ratings/add/${projectId}/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken,
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: JSON.stringify({ rating: rating })
+            })
+                .then(response => {
+                    if (!response.ok) throw new Error('Failed to submit rating');
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        loadCurrentRating(projectId, container);
+                        showToast('Rating submitted successfully!', 'success');
+                    } else {
+                        showToast(data.message || 'Error submitting rating', 'danger');
+                    }
+                })
+                .catch(error => {
+                    console.error('Rating submission failed:', error);
+                    showToast('Error submitting rating', 'danger');
+                });
+        }
+
+        function showToast(message, type) {
+            if (typeof bootstrap === 'undefined' || !bootstrap.Toast) {
+                alert(message);
+                return;
+            }
+
+            const toast = document.createElement('div');
+            toast.className = `toast align-items-center text-white bg-${type} border-0 position-fixed bottom-0 end-0 m-3`;
+            toast.setAttribute('role', 'alert');
+            toast.setAttribute('aria-live', 'assertive');
+            toast.setAttribute('aria-atomic', 'true');
+            toast.innerHTML = `
+            <div class="d-flex">
+                <div class="toast-body">${message}</div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        `;
+
+            document.body.appendChild(toast);
+            new bootstrap.Toast(toast).show();
+
+            toast.addEventListener('hidden.bs.toast', () => toast.remove());
+        }
+    });
+</script>
