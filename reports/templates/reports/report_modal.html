@@ -1,0 +1,58 @@
+<div id="reportModal" class="modal" style="display: none;">
+    <div class="modal-content" style="background: white; margin: 15% auto; padding: 20px; width: 80%; max-width: 500px; border: 1px solid #ddd;">
+        <span class="close" style="float: right; cursor: pointer; font-size: 24px;">&times;</span>
+        
+        <h3 style="margin-top: 0;">Report {{ content_type|title }}</h3>
+        
+        <form method="post" action="{% url 'create_report' %}">
+            {% csrf_token %}
+            <input type="hidden" name="content_type" value="{{ content_type }}">
+            <input type="hidden" name="object_id" value="{{ object_id }}">
+            <input type="hidden" name="cancel_url" value="{{ cancel_url }}">
+            
+            <div style="margin-bottom: 15px;">
+                <label style="display: block; margin-bottom: 5px;">Reason for reporting:</label>
+                <select name="reason" class="form-select" required style="width: 100%; padding: 8px;">
+                    <option value="">Select a reason</option>
+                    <option value="spam">Spam or misleading</option>
+                    <option value="abuse">Abusive content</option>
+                    <option value="scam">Scam or fraud</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+            
+            <div style="margin-bottom: 15px;">
+                <label style="display: block; margin-bottom: 5px;">Additional details (optional):</label>
+                <textarea name="description" style="width: 100%; padding: 8px; min-height: 80px;"></textarea>
+            </div>
+            
+            <div style="text-align: right;">
+                <button type="button" class="cancel-btn" style="padding: 8px 15px; background: #ccc; border: none; margin-right: 10px;">Cancel</button>
+                <button type="submit" style="padding: 8px 15px; background: #dc3545; color: white; border: none;">Submit Report</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Basic modal functionality without animations
+    document.addEventListener('DOMContentLoaded', function() {
+        // Get modal elements
+        var modal = document.getElementById('reportModal');
+        var span = document.querySelector('#reportModal .close');
+        var cancelBtn = document.querySelector('#reportModal .cancel-btn');
+        
+        // When user clicks on (x) or cancel button, close modal
+        span.onclick = function() { modal.style.display = 'none'; }
+        cancelBtn.onclick = function() { modal.style.display = 'none'; }
+        
+        // When user clicks anywhere outside modal, close it
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        }
+    });
+</script>
+
+

@@ -66,6 +66,14 @@
                 </div>
 
 
+                {% if user.is_authenticated and project.created_by and user != project.created_by %}
+                    <button onclick="document.getElementById('reportModal').style.display='block'" 
+                            style="background: none; border: none; color: #dc3545; cursor: pointer;">
+                        <i class="bi bi-flag"></i> Report Project
+                    </button>
+                    
+                    {% include 'reports/report_modal.html' with content_type='project' object_id=project.id cancel_url=request.path %}
+                {% endif %}
 
                 <div class="mb-4 pb-3 border-bottom">
                     <h4 class="h5 mb-3">
