@@ -8,8 +8,8 @@ from user_profiles.forms import ProfileUpdateForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.contrib import messages
-from django.contrib.auth import authenticate
 from django.http import HttpResponseRedirect
+from django.contrib.auth import authenticate, logout
 
 class UserProfileShowView(LoginRequiredMixin, DetailView):
     model = Profile
@@ -41,7 +41,7 @@ class UserProfileUpdateView(LoginRequiredMixin, UpdateView):
 class UserProfileDeleteView(LoginRequiredMixin, DeleteView):
     model = User
     template_name = 'profiles/delete_profile.html'
-    success_url = reverse_lazy('home')
+    success_url = reverse_lazy('homepage')
     
     def get_object(self):
         return self.request.user
@@ -51,8 +51,19 @@ class UserProfileDeleteView(LoginRequiredMixin, DeleteView):
         user = authenticate(username=request.user.username, password=password)
         
         if user is not None:
-            messages.success(request, 'Profile deleted successfully!')
-            return super().post(request, *args, **kwargs)
+            # Store the user object before logging out
+            user_to_delete = self.get_object()
+            
+            # Log out the user first
+            logout(request)
+            
+            # Delete the user object manually
+            user_to_delete.delete()
+            
+            messages.success(request, 'Account deleted successfully!')
+            
+            # Redirect to success URL
+            return HttpResponseRedirect(self.success_url)
         else:
             messages.error(request, 'Incorrect password. Please try again.')
             return HttpResponseRedirect(reverse_lazy('delete_profile'))

@@ -37,7 +37,6 @@ urlpatterns = [
     path('replies/', include('replays.urls')),
     path('ratings/', include('ratings.urls')),
     path('accounts/', include('allauth.urls')),
-    path('users/', include('users.urls'))
 
 ]
 
