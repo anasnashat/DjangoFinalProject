@@ -281,7 +281,7 @@
                                 {% for donation in donations %}
                                     <tr>
                                         <td>
-                                            <a href="{% url 'project_detail' donation.project.slug %}" class="project-link">
+                                            <a href="{% url 'project-detail' donation.project.slug %}" class="project-link">
                                                 <i class="fas fa-external-link-alt me-1"></i>
                                                 {{ donation.project.title }}
                                             </a>

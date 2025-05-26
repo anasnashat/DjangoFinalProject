@@ -176,7 +176,7 @@
                                                     <img src="{% static 'img/default-project.jpg' %}" alt="Default Image">
                                                 {% endif %}
                                                 <div class="project-overlay">
-                                                    <a href="{% url 'project_detail' project.slug %}" class="btn btn-primary btn-sm">
+                                                    <a href="{% url 'project-detail' project.slug %}" class="btn btn-primary btn-sm">
                                                         <i class="fas fa-eye me-1"></i>View Details
                                                     </a>
                                                 </div>
@@ -224,40 +224,40 @@
                             </a>
                         </div>
                         
-                        {% if donations %}
-                            <div class="donations-list">
-                                {% for donation in donations|slice:":5" %}
-                                    <div class="donation-item">
-                                        <div class="donation-info">
-                                            <h6 class="donation-project">
-                                                <a href="{% url 'project_detail' donation.project.slug %}">
-                                                    {{ donation.project.title }}
-                                                </a>
-                                            </h6>
-                                            <p class="donation-date">
-                                                <i class="fas fa-calendar me-1"></i>
-                                                {{ donation.created_at|date:"M d, Y" }}
-                                            </p>
-                                        </div>
-                                        <div class="donation-amount">
-                                            <span class="amount">${{ donation.amount }}</span>
-                                            {% if donation.payment_status == 'completed' %}
-                                                <span class="badge status-completed">
-                                                    <i class="fas fa-check me-1"></i>Completed
-                                                </span>
-                                            {% elif donation.payment_status == 'pending' %}
-                                                <span class="badge status-pending">
-                                                    <i class="fas fa-clock me-1"></i>Pending
-                                                </span>
-                                            {% else %}
-                                                <span class="badge status-failed">
-                                                    <i class="fas fa-times me-1"></i>Failed
-                                                </span>
-                                            {% endif %}
-                                        </div>
-                                    </div>
-                                {% endfor %}
-                            </div>
+                        {% if payments %}
+    <div class="donations-list">
+        {% for payment in payments|slice:":5" %}
+            <div class="donation-item">
+                <div class="donation-info">
+                    <h6 class="donation-project">
+                        <a href="{% url 'project-detail' payment.project.slug %}">
+                            {{ payment.project.title }}
+                        </a>
+                    </h6>
+                    <p class="donation-date">
+                        <i class="fas fa-calendar me-1"></i>
+                        {{ payment.created_at|date:"M d, Y" }}
+                    </p>
+                </div>
+                <div class="donation-amount">
+                    <span class="amount">${{ payment.amount }}</span>
+                    {% if payment.status == 'succeeded' %}
+                        <span class="badge status-completed">
+                            <i class="fas fa-check me-1"></i>Completed
+                        </span>
+                    {% elif payment.status == 'pending' %}
+                        <span class="badge status-pending">
+                            <i class="fas fa-clock me-1"></i>Pending
+                        </span>
+                    {% else %}
+                        <span class="badge status-failed">
+                            <i class="fas fa-times me-1"></i>Failed
+                        </span>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
                         {% else %}
                             <div class="empty-state">
                                 <div class="empty-icon">

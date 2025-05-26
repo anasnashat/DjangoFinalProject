@@ -47,10 +47,10 @@
                                 </div>
                                 <div class="card-footer">
                                     <div class="btn-group w-100">
-                                        <a href="{% url 'project_detail' project.slug %}" class="btn btn-primary">Details</a>
-                                        <a href="{% url 'edit_project' project.slug %}" class="btn btn-secondary">Update</a>
+                                        <a href="{% url 'project-detail' project.slug %}" class="btn btn-primary">Details</a>
+                                        <a href="{% url 'project-update' project.slug %}" class="btn btn-secondary">Update</a>
                                         {% if project.progress_percentage < 25 %}
-                                            <a href="{% url 'cancel_project' project.slug %}" class="btn btn-danger">Cancel</a>
+                                            <a href="{% url 'project-delete' project.slug %}" class="btn btn-danger">Cancel</a>
                                         {% endif %}
                                     </div>
                                 </div>

@@ -10,6 +10,7 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.contrib.auth import authenticate, logout
+from payments.models import Payment
 
 class UserProfileShowView(LoginRequiredMixin, DetailView):
     model = Profile
@@ -21,8 +22,12 @@ class UserProfileShowView(LoginRequiredMixin, DetailView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['projects'] = self.request.user.project_set.all()
-        context['donations'] = self.request.user.donation_set.all()
+        user_projects = self.request.user.project_set.all()
+        context['projects'] = user_projects
+        context['payments'] = self.request.user.payment_set.all()
+        total_raised = sum([project.amount_raised for project in user_projects])
+        context['total_amount_raised'] = total_raised
+        print(f"Total amount raised by user {self.request.user.username}: {total_raised}")
         return context
 
 class UserProfileUpdateView(LoginRequiredMixin, UpdateView):
@@ -78,10 +83,9 @@ class UserProjectsListView(LoginRequiredMixin, ListView):
         return Project.objects.filter(created_by=self.request.user).order_by('-created_at')
 
 class UserDonationsListView(LoginRequiredMixin, ListView):
-    model = Donation
     template_name = 'profiles/user_donations.html'
     context_object_name = 'donations'
     paginate_by = 10
     
     def get_queryset(self):
-        return Donation.objects.filter(user=self.request.user).order_by('-created_at')
+        return Payment.objects.filter(user=self.request.user).order_by('-created_at')
